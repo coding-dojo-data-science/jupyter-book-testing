@@ -1,0 +1,730 @@
+<h1>Model Explainers - For Regression</h1>
+<p></p>
+<h2>Lesson Objectives</h2>
+<p>By the end of this lesson students will be able to:</p>
+<ul>
+	<li>Define a global vs local explanation</li>
+	<li>Use the Shap package and interpret shap values.</li>
+</ul>
+<h2>Model Explainers</h2>
+<ul>
+	<li>There are packages with the sole purpose of better understanding how machine learning models make their
+		predictions.</li>
+	<li>Generally, model explainers will take the model and some of your data and apply some iterative process to try to
+		quantify how the features are influencing the model's output.</li>
+</ul>
+<pre class="rainbow" data-language="python">import pandas as pd
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import seaborn as sns
+## Customization Options
+# pd.set_option('display.float_format',lambda x: f"{x:,.4f}")
+pd.set_option("display.max_columns",100)
+plt.style.use(['fivethirtyeight','seaborn-talk'])
+mpl.rcParams['figure.facecolor']='white'
+## additional required imports
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.compose import make_column_transformer, make_column_selector, ColumnTransformer
+from sklearn.pipeline import make_pipeline, Pipeline
+from sklearn import metrics
+from sklearn.base import clone
+## fixing random for lesson generation
+SEED = 321
+np.random.seed(SEED)
+</pre>
+<pre class="rainbow" data-language="python">## Adding folder above to path
+import os, sys
+sys.path.append(os.path.abspath('../../'))
+## Load stack_functions with autoreload turned on
+%load_ext autoreload
+%autoreload 2
+from CODE import stack_functions as sf
+from CODE import prisoner_project_functions as pf
+def show_code(function):    import inspect     from IPython.display import display,Markdown, display_markdown    code = inspect.getsource(function)    md_txt = f"```python\n{code}\n```"    return display(Markdown(md_txt))    
+</pre>
+<pre class="rainbow" data-language="python">## Load in the student erformance data
+url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6xDKNpWkBBdhZSqepy48bXo55QnRv1Xy6tXTKYzZLMPjZozMfYhHQjAcC8uj9hQ/pub?output=xlsx"
+df = pd.read_excel(url,sheet_name='student-mat')
+df.info()
+df.head()
+</pre>
+<pre class="rainbow" data-language="css">&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 395 entries, 0 to 394
+Data columns (total 33 columns): #   Column      Non-Null Count  Dtype  ---  ------      --------------  -----   0   school      395 non-null    object  1   sex         395 non-null    object  2   age         395 non-null    float64 3   address     395 non-null    object  4   famsize     395 non-null    object  5   Pstatus     395 non-null    object  6   Medu        395 non-null    float64 7   Fedu        395 non-null    float64 8   Mjob        395 non-null    object  9   Fjob        395 non-null    object  10  reason      395 non-null    object  11  guardian    395 non-null    object  12  traveltime  395 non-null    float64 13  studytime   395 non-null    float64 14  failures    395 non-null    float64 15  schoolsup   395 non-null    object  16  famsup      395 non-null    object  17  paid        395 non-null    object  18  activities  395 non-null    object  19  nursery     395 non-null    object  20  higher      395 non-null    object  21  internet    395 non-null    object  22  romantic    395 non-null    object  23  famrel      395 non-null    float64 24  freetime    395 non-null    float64 25  goout       395 non-null    float64 26  Dalc        395 non-null    float64 27  Walc        395 non-null    float64 28  health      395 non-null    float64 29  absences    395 non-null    float64 30  G1          395 non-null    float64 ="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="keyword operator from-rainbow"&gt;="constant numeric from-rainbow"&gt;31  G2          395 non-null    float64 32  G3          395 non-null    float64
+dtypes: float64(16), object(17)
+memory usage: 102.0+ KB
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589369__output_7_1.png">
+</figure>
+<p><br></p>
+<pre class="rainbow" data-language="python"># ### Train Test Split
+## Make x and y variables
+drop_feats = ['G1','G2']
+y = df['G3'].copy()
+X = df.drop(columns=['G3',*drop_feats]).copy()
+## train-test-split with random state for reproducibility
+X_train, X_test, y_train, y_test = train_test_split(X,y, random_state=SEED)
+# ### Preprocessing + ColumnTransformer
+## make categorical &amp; numeric selectors
+cat_sel = make_column_selector(dtype_include='object')
+num_sel = make_column_selector(dtype_include='number')
+## make pipelines for categorical vs numeric data
+cat_pipe = make_pipeline(SimpleImputer(strategy='constant',                                       fill_value='MISSING'),                         OneHotEncoder(drop='if_binary', sparse=False))
+num_pipe = make_pipeline(SimpleImputer(strategy='mean'))
+## make the preprocessing column transformer
+preprocessor = make_column_transformer((num_pipe, num_sel),                                       (cat_pipe,cat_sel),                                      verbose_feature_names_out=False)
+## fit column transformer and run get_feature_names_out
+preprocessor.fit(X_train)
+feature_names = preprocessor.get_feature_names_out()
+X_train_df = pd.DataFrame(preprocessor.transform(X_train),                           columns = feature_names, index = X_train.index)
+X_test_df = pd.DataFrame(preprocessor.transform(X_test),                           columns = feature_names, index = X_test.index)
+X_test_df.head(3)
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589386__output_7_1.png">
+</figure>
+<p><br></p>
+<pre class="rainbow" data-language="python">## fit random fores
+from sklearn.ensemble import RandomForestRegressor
+rf_reg = RandomForestRegressor()
+rf_reg.fit(X_train_df,y_train)
+sf.evaluate_regression(rf_reg,X_test_df,y_test, warn=False, X_train=X_train_df, y_train=y_train)
+</pre>
+<pre>      Train   Test  Delta
+R^2   0.910  0.085 -0.825
+RMSE  1.405  4.023  2.618
+Fjob_health          0.001351
+guardian_mother      0.004300
+reason_other         0.004932
+guardian_father      0.005284
+reason_home          0.005356
+internet_yes         0.005659
+Pstatus_T            0.006196
+paid_yes             0.007169
+address_U            0.007630
+Mjob_health          0.007761
+Mjob_other           0.007970
+famsize_LE3          0.008351
+Fjob_services        0.008621
+Mjob_teacher         0.009024
+Dalc                 0.009191
+school_MS            0.009252
+nursery_yes          0.009272
+Fjob_other           0.009453
+Mjob_services        0.010012
+activities_yes       0.010288
+Fjob_teacher         0.010371
+guardian_other       0.010720
+Fjob_at_home         0.010922
+romantic_yes         0.012431
+famsup_yes           0.013015
+higher_yes           0.014331
+reason_reputation    0.015734
+Fedu                 0.020560
+sex_M                0.021505
+famrel               0.021921
+reason_course        0.022823
+Mjob_at_home         0.023137
+schoolsup_yes        0.023192
+Medu                 0.024457
+age                  0.027299
+traveltime           0.027808
+health               0.031356
+freetime             0.035128
+Walc                 0.036055
+studytime            0.038027
+goout                0.047714
+failures             0.151020
+absences             0.213404
+Name: Feature Importance, dtype: float64
+</pre>
+<h3>Loading Joblib of Regressions from Lesson 04</h3>
+<pre class="rainbow" data-language="python">import joblib
+## If showing joblib in prior lesson, this cell will be included and further explained
+loaded_data = joblib.load("../3_Feature_Importance/lesson_03.joblib")
+loaded_data.keys()
+</pre>
+<pre>dict_keys(['X_train', 'y_train', 'X_test', 'y_test', 'preprocessor', 'lin_reg', 'rf_reg'])
+</pre>
+<pre class="rainbow" data-language="python">## If showing joblib in prior lesson, this cell will be included and further explained
+X_train_reg = loaded_data['X_train'].copy()
+y_train_reg = loaded_data['y_train'].copy()
+X_test_df_reg = loaded_data['X_test'].copy()
+y_test_reg = loaded_data['y_test'].copy()
+lin_reg = loaded_data['lin_reg']
+rf_reg = loaded_data['rf_reg']
+</pre>
+<h2>Using SHAP for Model Interpretation</h2>
+<ul>
+	<li>SHAP (SHapley Additive exPlanations))<ul>
+			<li><a href="https://github.com/slundberg/shap" data-href="https://github.com/slundberg/shap"
+					title="https://github.com/slundberg/shap">Repository</a></li>
+			<li><a href="https://shap.readthedocs.io/en/latest/?badge=latest"
+					data-href="https://shap.readthedocs.io/en/latest/?badge=latest"
+					title="https://shap.readthedocs.io/en/latest/?badge=latest">Documentation</a></li>
+		</ul>
+	</li>
+	<li>SHAP uses game theory to calcualte Shapely values for each feature in the dataset.</li>
+	<li>Shapely values are calculated by iteratively testing each feature's contribution to the model by comparing the
+		model's performance with vs. without the feature. (The "marginal contribution" of the feature to the model's
+		performance).</li>
+</ul>
+<h4>Papers, Book Excerpts, and Blogs</h4>
+<ul>
+	<li><a href="https://arxiv.org/abs/1705.07874" data-href="https://arxiv.org/abs/1705.07874"
+			title="https://arxiv.org/abs/1705.07874">White Paper on Shapely Values</a></li>
+	<li><a href="https://christophm.github.io/interpretable-ml-book/shap.html"
+			data-href="https://christophm.github.io/interpretable-ml-book/shap.html"
+			title="https://christophm.github.io/interpretable-ml-book/shap.html">Intepretable Machine Learning Book -
+			Section on SHAP</a></li>
+	<li>Towards Data Science Blog Posts:<ul>
+			<li><a href="https://towardsdatascience.com/explain-your-model-with-the-shap-values-bc36aac4de3d"
+					data-href="https://towardsdatascience.com/explain-your-model-with-the-shap-values-bc36aac4de3d"
+					title="https://towardsdatascience.com/explain-your-model-with-the-shap-values-bc36aac4de3d">Explain
+					Your Model with SHAP Values</a></li>
+			<li><a href="https://towardsdatascience.com/explain-any-models-with-the-shap-values-use-the-kernelexplainer-79de9464897a"
+					data-href="https://towardsdatascience.com/explain-any-models-with-the-shap-values-use-the-kernelexplainer-79de9464897a"
+					title="https://towardsdatascience.com/explain-any-models-with-the-shap-values-use-the-kernelexplainer-79de9464897a">Explain
+					Any Model with SHAP KernelExplaibner</a></li>
+		</ul>
+	</li>
+</ul>
+<h4>Videos/Talks:</h4>
+<ul>
+	<li>Explaining Machine Learning Models (in general).<ul>
+			<li><a href="https://youtu.be/C80SQe16Rao" data-href="https://youtu.be/C80SQe16Rao"
+					title="https://youtu.be/C80SQe16Rao">"Open the Black Box: an intro to Model Interpretability with
+					LIME and SHAP</a></li>
+		</ul>
+	</li>
+	<li>Understanding Shapely/SHAP Values:<ul>
+			<li><a href="https://youtu.be/Tg8aPwPPJ9c" data-href="https://youtu.be/Tg8aPwPPJ9c"
+					title="https://youtu.be/Tg8aPwPPJ9c">AI Simplified: SHAP Values in Machine Learning&nbsp;</a>-
+				(Intuitive Explanation)</li>
+			<li><a href="https://youtu.be/9haIOplEIGM" data-href="https://youtu.be/9haIOplEIGM"
+					title="https://youtu.be/9haIOplEIGM">Explainable AI explained! | #4 SHAP&nbsp;</a>- (Math
+				Calculation Explanation)</li>
+		</ul>
+	</li>
+</ul>
+<h3>How To Use Shap</h3>
+<ul>
+	<li>Import and initialize javascript:</li>
+</ul>
+<pre class="rainbow" data-language="python">import shap
+shap.initjs()
+</pre>
+<p><br></p>
+<h3>Shap Explainers</h3>
+<ul>
+	<li>shap has several types of model explainers that are optimized for different types of models.</li>
+</ul>
+<h4>Explainers and their use cases:</h4>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589760__markdown_21_table_0.png">
+</figure>
+<p><img src="https://file+.vscode-resource.vscode-cdn.net/Users/codingdojo/Documents/GitHub/_CURRICULUM/curriculum-model-insights/LESSONS/4_Model_Explainers-Regression/4_Model_Explainers-Regression_files/markdown_21_table_0.png"
+		class="loading loading loading loading loading" id="image-hash-1263120168"
+		data-src="4_Model_Explainers-Regression_files/markdown_21_table_0.png"
+		style="max-width: 100%; max-height: 100%; border-style: none; box-sizing: content-box; background-color: var(--color-canvas-default);">
+</p>
+<ul>
+	<li>See&nbsp;<a href="https://towardsdatascience.com/explain-your-model-with-the-shap-values-bc36aac4de3d"
+			data-href="https://towardsdatascience.com/explain-your-model-with-the-shap-values-bc36aac4de3d"
+			title="https://towardsdatascience.com/explain-your-model-with-the-shap-values-bc36aac4de3d">this blog
+			post</a>&nbsp;for intro to topic and how to use with trees</li>
+	<li>For non-tree/random forest models&nbsp;<a
+			href="https://towardsdatascience.com/explain-any-models-with-the-shap-values-use-the-kernelexplainer-79de9464897a"
+			data-href="https://towardsdatascience.com/explain-any-models-with-the-shap-values-use-the-kernelexplainer-79de9464897a"
+			title="https://towardsdatascience.com/explain-any-models-with-the-shap-values-use-the-kernelexplainer-79de9464897a">see
+			this follow up post</a></li>
+</ul>
+<h3>Preparing Data for Shap</h3>
+<ul>
+	<li>Shap's approach to explaining models can be very resource-intensive for complex models such as our RandomForest.
+	</li>
+	<li>To get around this issue, shap includes a convenient smapling function to save a small sample from one of our X
+		variables.</li>
+</ul>
+<pre class="rainbow" data-language="python">X_shap = shap.sample(X_train_df,nsamples=200,random_state=321)
+X_shap
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589775__output_24_0.png">
+</figure>
+<p><br></p>
+<pre class="rainbow" data-language="python">## get the corresponding y-values
+y_shap = y_train.loc[X_shap.index]
+y_shap
+</pre>
+<pre>355     9.0
+354    11.0
+328     9.0
+231    11.0
+312    11.0       ... 210     8.0
+236    13.0
+10      9.0
+13     11.0
+372    11.0
+Name: G3, Length: 200, dtype: float64
+</pre>
+<h3>Explaining Our RandomForest</h3>
+<ol>
+	<li>Create a shap explainer using your fit model.</li>
+</ol>
+<pre class="rainbow" data-language="python">explainer = shap.TreeExplainer(rf_reg)
+</pre>
+<ol>
+	<li>Get shapely values from explainer for your training data</li>
+</ol>
+<pre class="rainbow" data-language="python">shap_values = explainer(X_shap)
+</pre>
+<ol>
+	<li>Select which type of the available plots you'd like to visualize</li>
+</ol>
+<ul>
+	<li>Types of Plots:<ul>
+			<li><code>summary_plot()</code></li>
+			<li><code>dependence_plot()</code></li>
+			<li><code>force_plot()</code>&nbsp;for a given observation</li>
+			<li><code>force_plot()</code>&nbsp;for all data</li>
+		</ul>
+	</li>
+</ul>
+<pre class="rainbow" data-language="python">X_shap = X_train_df.copy()#shap.sample(X_train_df,nsamples=200,random_state=SEED)
+explainer = shap.TreeExplainer(rf_reg)
+shap_values = explainer(X_shap,y_shap)
+shap_values[0]
+</pre>
+<pre>.values =
+array([-2.65129202e-03,  3.37739374e-02, -1.66913694e-02,  4.04224947e-02,       -8.89278699e-02,  8.22963912e-01, -2.19713066e-02,  9.46616336e-03,       -1.05073602e-01,  4.45105221e-02,  7.95999848e-02,  6.99744889e-01,        1.05407076e+00,  7.37235898e-03, -1.65178625e-01,  1.09019192e-01,        6.88803146e-02, -8.73117299e-03,  1.44210492e-01, -4.05021571e-02,        8.44343694e-03, -5.94057998e-02,  9.03834608e-02,  2.51376396e-02,        1.69540791e-03, -5.10195738e-02, -2.51987310e-03, -3.91344713e-02,        1.97009755e-01, -3.56228354e-03, -2.04581060e-02,  2.76732166e-01,       -1.81765629e-03,  1.43730639e-02,  5.16251179e-02,  1.98845113e-01,        2.61826118e-01, -5.57521403e-04, -2.41598627e-02,  3.22229694e-02,        9.33188335e-03,  3.45140981e-02,  7.30116122e-02])
+.base_values =
+array([10.34317568])
+.data =
+array([17.,  3.,  2.,  2.,  2.,  0.,  4.,  4.,  4.,  1.,  3.,  1.,  2.,        0.,  0.,  1.,  1.,  1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,        0.,  0.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.,        1.,  1.,  1.,  0.])
+</pre>
+<pre class="rainbow" data-language="python">X_shap.shape
+</pre>
+<pre>(296, 43)
+</pre>
+<pre class="rainbow" data-language="python">shap_values.shape
+</pre>
+<pre>(296, 43)
+</pre>
+<ul>
+	<li>We can see that shap calculated values for every row/column in our X_shap variable.</li>
+	<li>What does the first row's shap values look like?</li>
+</ul>
+<pre class="rainbow" data-language="python">shap_values[0]
+</pre>
+<pre>.values =
+array([-2.65129202e-03,  3.37739374e-02, -1.66913694e-02,  4.04224947e-02,       -8.89278699e-02,  8.22963912e-01, -2.19713066e-02,  9.46616336e-03,       -1.05073602e-01,  4.45105221e-02,  7.95999848e-02,  6.99744889e-01,        1.05407076e+00,  7.37235898e-03, -1.65178625e-01,  1.09019192e-01,        6.88803146e-02, -8.73117299e-03,  1.44210492e-01, -4.05021571e-02,        8.44343694e-03, -5.94057998e-02,  9.03834608e-02,  2.51376396e-02,        1.69540791e-03, -5.10195738e-02, -2.51987310e-03, -3.91344713e-02,        1.97009755e-01, -3.56228354e-03, -2.04581060e-02,  2.76732166e-01,       -1.81765629e-03,  1.43730639e-02,  5.16251179e-02,  1.98845113e-01,        2.61826118e-01, -5.57521403e-04, -2.41598627e-02,  3.22229694e-02,        9.33188335e-03,  3.45140981e-02,  7.30116122e-02])
+.base_values =
+array([10.34317568])
+.data =
+array([17.,  3.,  2.,  2.,  2.,  0.,  4.,  4.,  4.,  1.,  3.,  1.,  2.,        0.,  0.,  1.,  1.,  1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,        0.,  0.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.,        1.,  1.,  1.,  0.])
+</pre>
+<ul>
+	<li>Notice above that we do not seem to have a simple numpy array.</li>
+</ul>
+<pre class="rainbow" data-language="python">type(shap_values[0])
+</pre>
+<pre>shap._explanation.Explanation
+</pre>
+<pre class="rainbow" data-language="python">explanation_0 = shap_values[0]
+explanation_0
+</pre>
+<pre>.values =
+array([-2.65129202e-03,  3.37739374e-02, -1.66913694e-02,  4.04224947e-02,       -8.89278699e-02,  8.22963912e-01, -2.19713066e-02,  9.46616336e-03,       -1.05073602e-01,  4.45105221e-02,  7.95999848e-02,  6.99744889e-01,        1.05407076e+00,  7.37235898e-03, -1.65178625e-01,  1.09019192e-01,        6.88803146e-02, -8.73117299e-03,  1.44210492e-01, -4.05021571e-02,        8.44343694e-03, -5.94057998e-02,  9.03834608e-02,  2.51376396e-02,        1.69540791e-03, -5.10195738e-02, -2.51987310e-03, -3.91344713e-02,        1.97009755e-01, -3.56228354e-03, -2.04581060e-02,  2.76732166e-01,       -1.81765629e-03,  1.43730639e-02,  5.16251179e-02,  1.98845113e-01,        2.61826118e-01, -5.57521403e-04, -2.41598627e-02,  3.22229694e-02,        9.33188335e-03,  3.45140981e-02,  7.30116122e-02])
+.base_values =
+array([10.34317568])
+.data =
+array([17.,  3.,  2.,  2.,  2.,  0.,  4.,  4.,  4.,  1.,  3.,  1.,  2.,        0.,  0.,  1.,  1.,  1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,        0.,  0.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.,        1.,  1.,  1.,  0.])
+</pre>
+<ul>
+	<li>Each entry in the shap_values array is new type of object called an Explanation.<ul>
+			<li>Each Explanation has:<ul>
+					<li>values:the shap values calculated for this observation/row.<ul>
+							<li>For classification models, there is a column with values for each target.</li>
+						</ul>
+					</li>
+					<li>base_values: the final shap output value</li>
+					<li>data: the original input feature</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>
+<pre class="rainbow" data-language="python">## Showing .data is the same as the raw X_shap
+explanation_0.data
+</pre>
+<pre>array([17.,  3.,  2.,  2.,  2.,  0.,  4.,  4.,  4.,  1.,  3.,  1.,  2.,        0.,  0.,  1.,  1.,  1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,        0.,  0.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.,        1.,  1.,  1.,  0.])
+</pre>
+<pre class="rainbow" data-language="python">X_shap.iloc[0].values
+</pre>
+<pre>array([17.,  3.,  2.,  2.,  2.,  0.,  4.,  4.,  4.,  1.,  3.,  1.,  2.,        0.,  0.,  1.,  1.,  1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  1.,        0.,  0.,  0.,  0.,  0.,  1.,  0.,  1.,  0.,  0.,  0.,  1.,  0.,        1.,  1.,  1.,  0.])
+</pre>
+<pre class="rainbow" data-language="python">## showing the .values
+pd.Series(explanation_0.values,index=X_shap.columns)
+</pre>
+<pre>age                 -0.002651
+Medu                 0.033774
+Fedu                -0.016691
+traveltime           0.040422
+studytime           -0.088928
+failures             0.822964
+famrel              -0.021971
+freetime             0.009466
+goout               -0.105074
+Dalc                 0.044511
+Walc                 0.079600
+health               0.699745
+absences             1.054071
+school_MS            0.007372
+sex_M               -0.165179
+address_U            0.109019
+famsize_LE3          0.068880
+Pstatus_T           -0.008731
+Mjob_at_home         0.144210
+Mjob_health         -0.040502
+Mjob_other           0.008443
+Mjob_services       -0.059406
+Mjob_teacher         0.090383
+Fjob_at_home         0.025138
+Fjob_health          0.001695
+Fjob_other          -0.051020
+Fjob_services       -0.002520
+Fjob_teacher        -0.039134
+reason_course        0.197010
+reason_home         -0.003562
+reason_other        -0.020458
+reason_reputation    0.276732
+guardian_father     -0.001818
+guardian_mother      0.014373
+guardian_other       0.051625
+schoolsup_yes        0.198845
+famsup_yes           0.261826
+paid_yes            -0.000558
+activities_yes      -0.024160
+nursery_yes          0.032223
+higher_yes           0.009332
+internet_yes         0.034514
+romantic_yes         0.073012
+dtype: float64
+</pre>
+<h2>Shap Visualizations - Regression</h2>
+<h3>Summary Plot</h3>
+<p><br></p>
+<blockquote>
+	<ul>
+		<li>Feature importance: Variables are ranked in descending order.</li>
+	</ul>
+</blockquote>
+<ul>
+	<li>Impact: The horizontal location shows whether the effect of that value is associated with a higher or lower
+		prediction.</li>
+	<li>Original value: Color shows whether that variable is high (in red) or low (in blue) for that observation.</li>
+</ul>
+<blockquote>
+	<ul>
+		<li>IMPORTANT NOTE:&nbsp;You may need to slice out the correct shap_values for the target class. (by default
+			explainer.shap_values seems to return a list for a binary classification, one set of shap values for each
+			class). - This will cause issues like the summary plot having a bar with an equal amount of blue and red for
+			each class. - To fix, slice out the correct matrix from shap_values [0,1]</li>
+	</ul>
+</blockquote>
+<ul>
+	<li>First, let's examine a simple version of our shap values.<ul>
+			<li>By using the plot_type="bar" version of the summary plot, we get something that looks very similar to
+				the feature importances we discussed previously.</li>
+		</ul>
+	</li>
+</ul>
+<pre class="rainbow" data-language="python">shap.summary_plot(shap_values,features= X_shap,plot_type='bar')
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589871__output_44_0.png">
+</figure>
+<p><br></p>
+<ul>
+	<li>In this case, it is using the magnitude of the average shap values to to show which features had the biggest
+		impact on the model's predictions.<ul>
+			<li>Like feature importance and permutation importance, this visualization is not indicating
+				which&nbsp;direction&nbsp;the features push the predict.</li>
+		</ul>
+	</li>
+	<li>Now, let's examine the "dot" version of the summary plot.<ul>
+			<li>By removing the plot_type argument, we are using the default, which is "dot".<ul>
+					<li>We could explicitly specify plot_type="dot".<ul>
+							<li>There are also additional plot types that we will not be discussing in this lesson (e.g.
+								"violin","compact_dot")</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>
+<pre class="rainbow" data-language="python">shap.summary_plot(shap_values,X_shap)
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589888__output_46_0.png">
+</figure>
+<p><br></p>
+<p>Now THAT is a lot more nuanced of a visualization! Let's break down how to interpret the visual above.</p>
+<h3>Reading Summary Plots</h3>
+<ul>
+	<li>In the summary plot above:<ul>
+			<li>Each dot represents an observation/row (in this case, a student).</li>
+			<li>The&nbsp;features are plotting on the y-axis, and are sorted from the most impactful features to the
+				least (from top to bottom).</li>
+			<li>The&nbsp;calculated Shapely values for each observation&nbsp;are plotted on the x-axis. The most
+				positive the value the more positive...&nbsp;<code>bookmark</code></li>
+			<li>For each feature, the original values of that feature are represented with color.<ul>
+					<li>Using the default colormap, blue represents the lowest value in the column and red represents
+						the highest.<ul>
+							<li>For one hot encoded categories, blue=0, red = 1.</li>
+							<li>For numeric features: the shade of the color indicates where it falls in the feature's
+								distribution.</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</ul>
+<h3>Summary Plot Interpretation</h3>
+<ul>
+	<li>fewer prior failures = higher final grade -<code>Q: what is going on with absences?</code>
+		<ul>
+			<li>why are some of the lowest values leading to negative shap value (meaning a decreased final score)?</li>
+			<li>Why would less absences meaning a lower final grade?<ul>
+					<li>🤔 Did the student not spend all 3 years at the school??</li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li>sex_M:<ul>
+			<li>males get a higher grade</li>
+		</ul>
+	</li>
+	<li>reason_course:<ul>
+			<li>if a student attends the school because of a specific course, they have a lower final grade.</li>
+		</ul>
+	</li>
+	<li>goout:<ul>
+			<li>the more a student goes out, the lower the grade.</li>
+		</ul>
+	</li>
+	<li>Medu (mother's education):<ul>
+			<li>Higher mother's ed the higher the grade</li>
+		</ul>
+	</li>
+	<li>Mjob_at_home:<ul>
+			<li>Mother at home leads to lower grades.</li>
+		</ul>
+	</li>
+	<li>Walc: Lower weekend alcohol consumption "causes" higher grade</li>
+</ul>
+<h3>Dependence Plots</h3>
+<p>Shap also includes the&nbsp;<code>shap.dependence_plot</code>&nbsp;which show how the model output varies by a
+	specific feature. By passing the function a feature name, it will automatically determine what features may driving
+	the interactions with the selected feature. It will encode the interaction feature as color.</p>
+<pre class="rainbow" data-language="python">## To Auto-Select Feature Most correlated with a specific feature, just pass the desired feature's column name.
+shap.dependence_plot('Age', shap_values X_shap)
+</pre>
+<ul>
+	<li>TO DO:<ul>
+			<li>There is a way to specifically call out multiple features but I wasn't able to summarize it quickly for
+				this nb</li>
+		</ul>
+	</li>
+</ul>
+<pre class="rainbow" data-language="python">## Using shap_values made from shap_values = explainer(X_shap)
+shap.dependence_plot("absences", shap_values.values,X_shap)
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589950__output_53_0.png">
+</figure>
+<p><br></p>
+<pre class="rainbow" data-language="python">## Using shap_values made from shap_values = explainer(X_shap)
+shap.dependence_plot("Medu", shap_values.values,X_shap)
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589962__output_54_0.png">
+</figure>
+<p><br></p>
+<pre class="rainbow" data-language="python">## Using shap_values made from shap_values = explainer(X_shap)
+shap.dependence_plot("goout", shap_values.values,X_shap)
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657589976__output_55_0.png">
+</figure>
+<p><br></p>
+<h3>Force Plot</h3>
+<blockquote>
+	<ul>
+		<li>Note: the force_plot is an interactive visualization that uses javascript. You must Trust your jupyter
+			notebook in order to display it. - In the top right corner of jupyter notebook, next the kernel name (Python
+			(dojo-env)), click the&nbsp;<code>Not Trusted</code>&nbsp;button to trust the notebook.</li>
+	</ul>
+</blockquote>
+<h4>Global&nbsp;<code>shap.force_plot</code></h4>
+<p>To show a global force plot:</p>
+<pre class="rainbow" data-language="python">## Fore plot
+shap.force_plot(explainer.expected_value[1], shap_values[:,:,1], features=X_shap)
+</pre>
+<h4></h4>
+<h4>Global Force Plot</h4>
+<pre class="rainbow" data-language="python">## TESTING COMPLEX SHAP VALS AGAIN (Overall Forceplot)
+shap.force_plot(explainer.expected_value, shap_values.values,features=X_shap)
+</pre>
+<figure><img
+		src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657590071__force_plot_global.png">
+</figure>
+<p><br></p>
+<p></p>
+<li>
+	<p></p>
+	<h4>Fore Plot Interpretation</h4>
+	<ul>
+		<li>TO DO</li>
+	</ul>
+	<h4>Explain Individual Plot</h4>
+	<ul>
+		<li>To show an individual data point's prediction and the factors pushing it towards one class or another.</li>
+		<li>For now, we will randomly select a row to display, but we will revisit thoughtful selection of examples for
+			stakeholders in our next lesson about local explanations.</li>
+	</ul>
+	<pre class="rainbow" data-language="python">## Just using np to randomly select a row
+row = np.random.choice(range(len(X_shap)))         
+shap.force_plot(explainer.expected_value[1], shap_values[1][row], X_shap.iloc[row])
+</pre>
+	<pre class="rainbow" data-language="python">row = np.random.choice(range(len(X_shap)))
+print(f"- Row #: {row}")
+print(f"- Target: {y_shap.iloc[row]}")
+X_shap.iloc[row].round(2)
+</pre>
+	<pre>- Row #: 85
+- Target: 6.0
+age                  18.0
+Medu                  1.0
+Fedu                  1.0
+traveltime            2.0
+studytime             2.0
+failures              1.0
+famrel                4.0
+freetime              4.0
+goout                 3.0
+Dalc                  2.0
+Walc                  3.0
+health                5.0
+absences              2.0
+school_MS             1.0
+sex_M                 1.0
+address_U             0.0
+famsize_LE3           1.0
+Pstatus_T             1.0
+Mjob_at_home          1.0
+Mjob_health           0.0
+Mjob_other            0.0
+Mjob_services         0.0
+Mjob_teacher          0.0
+Fjob_at_home          0.0
+Fjob_health           0.0
+Fjob_other            1.0
+Fjob_services         0.0
+Fjob_teacher          0.0
+reason_course         0.0
+reason_home           0.0
+reason_other          1.0
+reason_reputation     0.0
+guardian_father       0.0
+guardian_mother       1.0
+guardian_other        0.0
+schoolsup_yes         0.0
+famsup_yes            0.0
+paid_yes              0.0
+activities_yes        1.0
+nursery_yes           0.0
+higher_yes            0.0
+internet_yes          0.0
+romantic_yes          0.0
+Name: 361, dtype: float64
+</pre>
+	<pre class="rainbow" data-language="python">## Individual forceplot (with the complex shap vals)
+shap.force_plot(explainer.expected_value,shap_values= shap_values[row].values, features=X_shap.iloc[row])
+</pre>
+	<figure><img
+			src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657590310__force_plot_individual.png">
+	</figure>
+	<p></p>
+</li>
+<li><br>
+	<p></p>
+	<pre class="rainbow" data-language="python">#source: https://towardsdatascience.com/explainable-ai-xai-a-guide-to-7-packages-in-python-to-explain-your-models-932967f0634b
+shap.plots._waterfall.waterfall_legacy(explainer.expected_value[0], shap_values[row].values,                                  features=X_shap.iloc[row],                                       show=True)
+</pre>
+	<figure><img
+			src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657590469__output_71_0.png">
+	</figure>
+	<p><br></p>
+	<h1>BOOKMARK: stopped here 07/11/22</h1>
+	<h3>Interaction Values</h3>
+	<p>"<em>The main effects are similar to the SHAP values you would get for a linear model, and the interaction
+			effects captures all the higher-order interactions are divide them up among the pairwise interaction terms.
+			Note that the sum of the entire interaction matrix is the difference between the model’s current output and
+			expected output, and so the interaction effects on the off-diagonal are split in half (since there are two
+			of each). When plotting interaction effects the SHAP package automatically multiplies the off-diagonal
+			values by two to get the full interaction effect.</em>"</p>
+	<ul>
+		<li><a href="https://shap.readthedocs.io/en/latest/example_notebooks/tabular_examples/tree_based_models/NHANES%20I%20Survival%20Model.html#Compute-SHAP-Interaction-Values"
+				data-href="https://shap.readthedocs.io/en/latest/example_notebooks/tabular_examples/tree_based_models/NHANES%20I%20Survival%20Model.html#Compute-SHAP-Interaction-Values"
+				title="https://shap.readthedocs.io/en/latest/example_notebooks/tabular_examples/tree_based_models/NHANES%20I%20Survival%20Model.html#Compute-SHAP-Interaction-Values">https://shap.readthedocs.io/en/latest/example_notebooks/tabular_examples/tree_based_models/NHANES
+				I Survival Model.html#Compute-SHAP-Interaction-Values</a></li>
+	</ul>
+	<pre class="rainbow" data-language="python">from dython.nominal import associations
+res = associations(X, annot=False,cmap='coolwarm')
+len(res)
+</pre>
+	<figure><img
+			src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657590483__output_75_0.png">
+	</figure>
+	<p><br></p>
+	<pre>2
+</pre>
+	<ul>
+		<li>Interactions: -&nbsp;<a href="https://towardsdatascience.com/analysing-interactions-with-shap-8c4a2bc11c2a"
+				data-href="https://towardsdatascience.com/analysing-interactions-with-shap-8c4a2bc11c2a"
+				title="https://towardsdatascience.com/analysing-interactions-with-shap-8c4a2bc11c2a">https://towardsdatascience.com/analysing-interactions-with-shap-8c4a2bc11c2a</a>
+		</li>
+	</ul>
+	<pre class="rainbow" data-language="python">shap_interaction_values = explainer.shap_interaction_values(X_shap)
+shap.summary_plot(shap_interaction_values,X_shap)
+</pre>
+	<figure><img
+			src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657590504__output_77_0.png">
+	</figure>
+	<p><br></p>
+	<pre>shap.dependence_plot(    ("age", "Walc"),    shap_interaction_values, X_shap,    display_features=X_shap
+)
+</pre>
+	<figure><img
+			src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657590520__output_78_0.png">
+	</figure>
+	<p><br></p>
+	<blockquote>TO DO: read more about the interactions and add interpretation here</blockquote>
+	<h3><code>Shap Decision Plot?</code></h3>
+	<pre>shap.decision_plot(explainer.expected_value, shap_values.values,X_shap)
+</pre>
+	<figure><img
+			src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1657590529__output_81_0.png">
+	</figure>
+	<p><br></p>
+	<p></p>
+</li> <br>
+<p></p>

@@ -1,0 +1,12 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+chapters:
+- file: LESSONS/0_insights_for_stakeholders/Insights for Stakeholders.ipynb
+- file: LESSONS/1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.ipynb
+- file: LESSONS/2_Analyzing_Coefficients/02_v2_Analyzing_Coefficients -RENAME.ipynb
+- file: LESSONS/4_Model_Explainers-Regression/4_Model_Explainers-Regression.ipynb
+- file: LESSONS/5_Explaining_Classifications/5_Explaining_Classifications.ipynb
+
