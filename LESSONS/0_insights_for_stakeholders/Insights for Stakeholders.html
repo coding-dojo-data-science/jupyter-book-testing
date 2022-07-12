@@ -1,0 +1,2815 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Insights for Stakeholders &#8212; Stack 5: Data Visualization - Model Insights</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Regression Coefficients - Revisited" href="../1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.html" />
+    <link rel="prev" title="Welcome to your Jupyter Book" href="../../intro.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/dojo-logo.jpeg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Stack 5: Data Visualization - Model Insights</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to your Jupyter Book
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Insights for Stakeholders
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.html">
+   Regression Coefficients - Revisited
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../2_Analyzing_Coefficients/02_v2_Analyzing_Coefficients%20-RENAME.html">
+   Analyzing Coefficients - V2
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../4_Model_Explainers-Regression/4_Model_Explainers-Regression.html">
+   Model Explainers - For Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../5_Explaining_Classifications/5_Explaining_Classifications.html">
+   Model Explainers - For Classification
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/coding-dojo-data-science/curriculum-model-insights/main?urlpath=tree/docs/LESSONS/0_insights_for_stakeholders/Insights for Stakeholders.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/coding-dojo-data-science/curriculum-model-insights"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/LESSONS/0_insights_for_stakeholders/Insights for Stakeholders.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Insights for Stakeholders
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lesson-objectives">
+     Lesson Objectives
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-stakeholder">
+     The Stakeholder
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#our-task">
+       Our Task
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#stakeholder-considerations">
+       Stakeholder Considerations
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#eda">
+   EDA
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exploratory-data-analysis">
+     Exploratory Data Analysis
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#determining-our-target">
+     Determining Our Target
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#types-of-model-based-insights">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         Types&lt;?&gt;
+        </span>
+       </code>
+       of Model-Based Insights
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     EDA
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visualizing-grades">
+       Visualizing Grades
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visualizing-progress-by-grade-groups">
+       Visualizing Progress By Grade Groups
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#next-steps">
+     Next Steps
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   APPENDIX
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Insights for Stakeholders</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Insights for Stakeholders
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lesson-objectives">
+     Lesson Objectives
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-stakeholder">
+     The Stakeholder
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#our-task">
+       Our Task
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#stakeholder-considerations">
+       Stakeholder Considerations
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#eda">
+   EDA
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exploratory-data-analysis">
+     Exploratory Data Analysis
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#determining-our-target">
+     Determining Our Target
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#types-of-model-based-insights">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         Types&lt;?&gt;
+        </span>
+       </code>
+       of Model-Based Insights
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     EDA
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visualizing-grades">
+       Visualizing Grades
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visualizing-progress-by-grade-groups">
+       Visualizing Progress By Grade Groups
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#next-steps">
+     Next Steps
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   APPENDIX
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="insights-for-stakeholders">
+<h1>Insights for Stakeholders<a class="headerlink" href="#insights-for-stakeholders" title="Permalink to this headline">#</a></h1>
+<section id="lesson-objectives">
+<h2>Lesson Objectives<a class="headerlink" href="#lesson-objectives" title="Permalink to this headline">#</a></h2>
+<p>By the end of this lesson, students will be able to:</p>
+<ul class="simple">
+<li><p>Define the stakeholder and their business problem that will be the guiding framework for this week’s lessons.</p></li>
+<li><p>Identify the target and features for a machine learning model to use for insights</p></li>
+<li><p>Understand how different feature/target choices can provide a different spin/perspective on the problem.</p></li>
+</ul>
+</section>
+<section id="the-stakeholder">
+<h2>The Stakeholder<a class="headerlink" href="#the-stakeholder" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>We’ve been hired by a school district that wants to use data science to identify and support high school students at risk of poor performance.</p></li>
+<li><p>They have provided us with data on several hundred of their former students and want to identify students who are at risk of poor grades/performance by year 3.</p>
+<ul>
+<li><p>The school included 3 years of grades(presumable grades 10-12), which are labeled as (G1-G3).</p></li>
+<li><p>They sent us an excel file with 3 sheets:</p>
+<ul>
+<li><p>student-mat: grades for Math (the student-mat sheet)</p></li>
+<li><p>student-por: grades for Portuguese</p></li>
+<li><p>README: data dictionary</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>The goal is to identify these students and provide additional support/tutoring to improve their academic performance.</p></li>
+</ul>
+<section id="our-task">
+<h3>Our Task<a class="headerlink" href="#our-task" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Develop machine-learning models to predict student performance in their final year (year 3).</p></li>
+<li><p>We will then use our model(s) to extract insights into which students are most at-risk for poor performance.</p></li>
+<li><p>We will provide a summary of our findings and 3 recommendations to the school on how to best identify these at-risk students.</p></li>
+</ul>
+<p>We will be focusing on the Math grades to start.</p>
+</section>
+<section id="stakeholder-considerations">
+<h3>Stakeholder Considerations<a class="headerlink" href="#stakeholder-considerations" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Before diving into modeling, let’s examine the data the school district has provided us and let’s brainstorm/discuss our approach for our models.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="eda">
+<h1>EDA<a class="headerlink" href="#eda" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="c1">## Customization Options</span>
+<span class="c1"># pd.set_option(&quot;display.max_columns&quot;,100)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">([</span><span class="s1">&#39;seaborn-talk&#39;</span><span class="p">])</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.facecolor&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;white&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import dataframe_image as dfi</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># url = &quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vS4sHmGyjSFri2HksxLxhLyFaBrewkuzVXvmhEMalxNxEQPZMVUxVkkOMgpCNFGdYJV0L-2bW59aM_M/pub?output=csv&quot;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vS6xDKNpWkBBdhZSqepy48bXo55QnRv1Xy6tXTKYzZLMPjZozMfYhHQjAcC8uj9hQ/pub?output=xlsx&quot;</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;student-mat&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 395 entries, 0 to 394
+Data columns (total 33 columns):
+ #   Column      Non-Null Count  Dtype  
+---  ------      --------------  -----  
+ 0   school      395 non-null    object 
+ 1   sex         395 non-null    object 
+ 2   age         395 non-null    float64
+ 3   address     395 non-null    object 
+ 4   famsize     395 non-null    object 
+ 5   Pstatus     395 non-null    object 
+ 6   Medu        395 non-null    float64
+ 7   Fedu        395 non-null    float64
+ 8   Mjob        395 non-null    object 
+ 9   Fjob        395 non-null    object 
+ 10  reason      395 non-null    object 
+ 11  guardian    395 non-null    object 
+ 12  traveltime  395 non-null    float64
+ 13  studytime   395 non-null    float64
+ 14  failures    395 non-null    float64
+ 15  schoolsup   395 non-null    object 
+ 16  famsup      395 non-null    object 
+ 17  paid        395 non-null    object 
+ 18  activities  395 non-null    object 
+ 19  nursery     395 non-null    object 
+ 20  higher      395 non-null    object 
+ 21  internet    395 non-null    object 
+ 22  romantic    395 non-null    object 
+ 23  famrel      395 non-null    float64
+ 24  freetime    395 non-null    float64
+ 25  goout       395 non-null    float64
+ 26  Dalc        395 non-null    float64
+ 27  Walc        395 non-null    float64
+ 28  health      395 non-null    float64
+ 29  absences    395 non-null    float64
+ 30  G1          395 non-null    float64
+ 31  G2          395 non-null    float64
+ 32  G3          395 non-null    float64
+dtypes: float64(16), object(17)
+memory usage: 102.0+ KB
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>school</th>
+      <th>sex</th>
+      <th>age</th>
+      <th>address</th>
+      <th>famsize</th>
+      <th>Pstatus</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>Mjob</th>
+      <th>Fjob</th>
+      <th>...</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>G3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>18.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>A</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>at_home</td>
+      <td>teacher</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>other</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>other</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>10.0</td>
+      <td>7.0</td>
+      <td>8.0</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>health</td>
+      <td>services</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>15.0</td>
+      <td>14.0</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>16.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>other</td>
+      <td>other</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>10.0</td>
+      <td>10.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 33 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># increasing the col width so we can read the description</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_colwidth</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">data_dict</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;README&#39;</span><span class="p">,</span><span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
+                          <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">data_dict</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Attributes</th>
+      <th>for both student-mat.csv (Math course) and student-por.csv (Portuguese language course) datasets:</th>
+    </tr>
+    <tr>
+      <th>#</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1.0</th>
+      <td>school</td>
+      <td>- student's school (binary: "GP" - Gabriel Pereira or "MS" - Mousinho da Silveira)</td>
+    </tr>
+    <tr>
+      <th>2.0</th>
+      <td>sex</td>
+      <td>- student's sex (binary: "F" - female or "M" - male)</td>
+    </tr>
+    <tr>
+      <th>3.0</th>
+      <td>age</td>
+      <td>- student's age (numeric: from 15 to 22)</td>
+    </tr>
+    <tr>
+      <th>4.0</th>
+      <td>address</td>
+      <td>- student's home address type (binary: "U" - urban or "R" - rural)</td>
+    </tr>
+    <tr>
+      <th>5.0</th>
+      <td>famsize</td>
+      <td>- family size (binary: "LE3" - less or equal to 3 or "GT3" - greater than 3)</td>
+    </tr>
+    <tr>
+      <th>6.0</th>
+      <td>Pstatus</td>
+      <td>- parent's cohabitation status (binary: "T" - living together or "A" - apart)</td>
+    </tr>
+    <tr>
+      <th>7.0</th>
+      <td>Medu</td>
+      <td>mother's education (numeric: 0 - none,  1 - primary education (4th grade), 2 ‚Äì 5th to 9th grade, 3 ‚Äì secondary education or 4 ‚Äì higher education</td>
+    </tr>
+    <tr>
+      <th>8.0</th>
+      <td>Fedu</td>
+      <td>father's education (numeric: 0 - none,  1 - primary education (4th grade), 2 ‚Äì 5th to 9th grade, 3 ‚Äì secondary education or 4 ‚Äì higher education</td>
+    </tr>
+    <tr>
+      <th>9.0</th>
+      <td>Mjob</td>
+      <td>- mother's job (nominal: "teacher", "health" care related, civil "services" (e.g. administrative or police), "at_home" or "other")</td>
+    </tr>
+    <tr>
+      <th>10.0</th>
+      <td>Fjob</td>
+      <td>- father's job (nominal: "teacher", "health" care related, civil "services" (e.g. administrative or police), "at_home" or "other")</td>
+    </tr>
+    <tr>
+      <th>11.0</th>
+      <td>reason</td>
+      <td>- reason to choose this school (nominal: close to "home", school "reputation", "course" preference or "other")</td>
+    </tr>
+    <tr>
+      <th>12.0</th>
+      <td>guardian</td>
+      <td>- student's guardian (nominal: "mother", "father" or "other")</td>
+    </tr>
+    <tr>
+      <th>13.0</th>
+      <td>traveltime</td>
+      <td>- home to school travel time (numeric: 1 - &lt;15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - &gt;1 hour)</td>
+    </tr>
+    <tr>
+      <th>14.0</th>
+      <td>studytime</td>
+      <td>- weekly study time (numeric: 1 - &lt;2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - &gt;10 hours)</td>
+    </tr>
+    <tr>
+      <th>15.0</th>
+      <td>failures</td>
+      <td>- number of past class failures (numeric: n if 1&lt;=n&lt;3, else 4)</td>
+    </tr>
+    <tr>
+      <th>16.0</th>
+      <td>schoolsup</td>
+      <td>- extra educational support (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>17.0</th>
+      <td>famsup</td>
+      <td>- family educational support (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>18.0</th>
+      <td>paid</td>
+      <td>- extra paid classes within the course subject (Math or Portuguese) (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>19.0</th>
+      <td>activities</td>
+      <td>- extra-curricular activities (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>20.0</th>
+      <td>nursery</td>
+      <td>- attended nursery school (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>21.0</th>
+      <td>higher</td>
+      <td>- wants to take higher education (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>22.0</th>
+      <td>internet</td>
+      <td>- Internet access at home (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>23.0</th>
+      <td>romantic</td>
+      <td>- with a romantic relationship (binary: yes or no)</td>
+    </tr>
+    <tr>
+      <th>24.0</th>
+      <td>famrel</td>
+      <td>- quality of family relationships (numeric: from 1 - very bad to 5 - excellent)</td>
+    </tr>
+    <tr>
+      <th>25.0</th>
+      <td>freetime</td>
+      <td>- free time after school (numeric: from 1 - very low to 5 - very high)</td>
+    </tr>
+    <tr>
+      <th>26.0</th>
+      <td>goout</td>
+      <td>- going out with friends (numeric: from 1 - very low to 5 - very high)</td>
+    </tr>
+    <tr>
+      <th>27.0</th>
+      <td>Dalc</td>
+      <td>- workday alcohol consumption (numeric: from 1 - very low to 5 - very high)</td>
+    </tr>
+    <tr>
+      <th>28.0</th>
+      <td>Walc</td>
+      <td>- weekend alcohol consumption (numeric: from 1 - very low to 5 - very high)</td>
+    </tr>
+    <tr>
+      <th>29.0</th>
+      <td>health</td>
+      <td>- current health status (numeric: from 1 - very bad to 5 - very good)</td>
+    </tr>
+    <tr>
+      <th>30.0</th>
+      <td>absences</td>
+      <td>- number of school absences (numeric: from 0 to 93)</td>
+    </tr>
+    <tr>
+      <th>=</th>
+      <td>=</td>
+      <td>=</td>
+    </tr>
+    <tr>
+      <th>#</th>
+      <td>Info</td>
+      <td>these  grades are related with the course subject, Math or Portuguese:</td>
+    </tr>
+    <tr>
+      <th>31.0</th>
+      <td>G1</td>
+      <td>- first period grade (numeric: from 0 to 20)</td>
+    </tr>
+    <tr>
+      <th>31.0</th>
+      <td>G2</td>
+      <td>- second period grade (numeric: from 0 to 20)</td>
+    </tr>
+    <tr>
+      <th>32.0</th>
+      <td>G3</td>
+      <td>- final grade (numeric: from 0 to 20, output target)</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Note</th>
+      <td>Additional note:</td>
+      <td>:there are several (382) students that belong to both datasets .</td>
+    </tr>
+    <tr>
+      <th>Note</th>
+      <td>Additional note:</td>
+      <td>These students can be identified by searching for identical attributes that characterize each student, as shown in the annexed R file.</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<section id="exploratory-data-analysis">
+<h2>Exploratory Data Analysis<a class="headerlink" href="#exploratory-data-analysis" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>We need to get an overview of this dataset and we’d like to get it quickly. While it is good practice to manually perform the EDA steps, we can also leverage additional tools/packages for quick dataset inspection.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">summarize_df</span><span class="p">(</span><span class="n">df_</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>             
+            <span class="s1">&#39;dtype&#39;</span><span class="p">:</span><span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="p">,</span>
+             <span class="s1">&#39;# null&#39;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+             <span class="s1">&#39;null (%)&#39;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
+        <span class="s1">&#39;nunique&#39;</span><span class="p">:</span><span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">(),</span>
+        <span class="s2">&quot;min&quot;</span><span class="p">:</span><span class="n">df</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+        <span class="s1">&#39;max&#39;</span><span class="p">:</span><span class="n">df</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+             <span class="p">})</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Column&#39;</span>
+    <span class="k">return</span> <span class="n">report</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+<span class="n">summarize_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Column</th>
+      <th>dtype</th>
+      <th># null</th>
+      <th>null (%)</th>
+      <th>nunique</th>
+      <th>min</th>
+      <th>max</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>school</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>GP</td>
+      <td>MS</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>sex</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>F</td>
+      <td>M</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>age</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>8</td>
+      <td>15.0</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>address</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>R</td>
+      <td>U</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>famsize</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>GT3</td>
+      <td>LE3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Pstatus</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>A</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Medu</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>0.0</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Fedu</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>0.0</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Mjob</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>at_home</td>
+      <td>teacher</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Fjob</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>at_home</td>
+      <td>teacher</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>reason</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>4</td>
+      <td>course</td>
+      <td>reputation</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>guardian</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>father</td>
+      <td>other</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>traveltime</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>4</td>
+      <td>1.0</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>studytime</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>4</td>
+      <td>1.0</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>failures</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>4</td>
+      <td>0.0</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>schoolsup</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>famsup</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>paid</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>activities</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>nursery</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>higher</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>internet</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>romantic</td>
+      <td>object</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>no</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>famrel</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>freetime</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>goout</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Dalc</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Walc</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>health</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>absences</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>34</td>
+      <td>0.0</td>
+      <td>75.0</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>G1</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>17</td>
+      <td>3.0</td>
+      <td>19.0</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>G2</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>17</td>
+      <td>0.0</td>
+      <td>19.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>G3</td>
+      <td>float64</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>18</td>
+      <td>0.0</td>
+      <td>20.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="determining-our-target">
+<h2>Determining Our Target<a class="headerlink" href="#determining-our-target" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>The stakeholder wants to identify students based on their predicted performance in their final year.</p>
+<ul>
+<li><p>“G1”,”G2”,”G3” are the student final score at the end of years 1-3.</p></li>
+</ul>
+</li>
+<li><p>One approach we could take is treat this as a regression task, with G3 as our target.</p>
+<ul>
+<li><p>This would allow us to predict the exact final grade of each student.</p></li>
+</ul>
+</li>
+</ul>
+<section id="types-of-model-based-insights">
+<h3><code class="docutils literal notranslate"><span class="pre">Types&lt;?&gt;</span></code> of Model-Based Insights<a class="headerlink" href="#types-of-model-based-insights" title="Permalink to this headline">#</a></h3>
+<p>There are several approaches available to us for modeling-based insights.</p>
+<p>First, we will examine big-picture insights for the entire model/dataset. Some options include:</p>
+<ul class="simple">
+<li><p>Use a Linear Regression to extract coefficients.</p>
+<ul>
+<li><p>Unscaled: exact effect on final grade of each feature.</p></li>
+<li><p>Scaled: features that are the most important for final grade.</p></li>
+</ul>
+</li>
+<li><p>Use tree-based regression models for Feature Importance.</p>
+<ul>
+<li><p>Which features are the most helpful for predicting grade?  (built-in importance)</p></li>
+<li><p>Which features damage the model’s performance the most when shuffled? (permutation importance).</p></li>
+</ul>
+</li>
+</ul>
+<p>We could also treat this as a classification task by creating a “at-risk” or “under-performing” classification column based on grades.
+- We can then leverage additional model explanation tools to understand which features make a student more likely to under-perform.</p>
+<p>Second, we will select stakeholder-appropriate visualizations to summarize our findings.</p>
+<ul class="simple">
+<li><p>We can leverage additional explanation packages to help us illustrate how a specific student’s features influence their predicted performance.</p></li>
+</ul>
+</section>
+</section>
+<section id="id1">
+<h2>EDA<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Before we dive into modeling, let’s take a moment for some EDA visualizations to help us get a sense of our target.</p></li>
+</ul>
+<section id="visualizing-grades">
+<h3>Visualizing Grades<a class="headerlink" href="#visualizing-grades" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;G3&#39;</span><span class="p">);</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Distribution of Final Grades&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Distribution of Final Grades&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/Insights for Stakeholders_23_1.png" src="../../_images/Insights for Stakeholders_23_1.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Lets compare all 3 years of grades on one histogram. Since each grade is a separate column, one approach we could take is to use the histplot function 3 times, once for each column.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Use histplot 3 times</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;G3&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span><span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;G3&#39;</span><span class="p">);</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;G2&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;G2&#39;</span><span class="p">);</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;slategray&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span><span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;G1&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Compare Years 1-3 (Original Vers)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/Insights for Stakeholders_25_0.png" src="../../_images/Insights for Stakeholders_25_0.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Another way we can leverage seaborn’s functionality is to make a new version of our dataframe where the columns “G1”-“G3” will be transposed so that we will have a 1 column with all of the grades and another column with the label for which year the grade was from.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Let&#39;s turn the integer index into a col for student-id</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;index&#39;</span><span class="p">:</span><span class="s1">&#39;student&#39;</span><span class="p">},</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>student</th>
+      <th>school</th>
+      <th>sex</th>
+      <th>age</th>
+      <th>address</th>
+      <th>famsize</th>
+      <th>Pstatus</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>Mjob</th>
+      <th>...</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>G3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>18.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>A</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>at_home</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>10.0</td>
+      <td>7.0</td>
+      <td>8.0</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>health</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>15.0</td>
+      <td>14.0</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>16.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>other</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>10.0</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>390</th>
+      <td>390</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>20.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>A</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>services</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>11.0</td>
+      <td>9.0</td>
+      <td>9.0</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>391</th>
+      <td>391</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>services</td>
+      <td>...</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>14.0</td>
+      <td>16.0</td>
+      <td>16.0</td>
+    </tr>
+    <tr>
+      <th>392</th>
+      <td>392</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>21.0</td>
+      <td>R</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>other</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>10.0</td>
+      <td>8.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>393</th>
+      <td>393</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>18.0</td>
+      <td>R</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>services</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>0.0</td>
+      <td>11.0</td>
+      <td>12.0</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>394</th>
+      <td>394</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>19.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>other</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>8.0</td>
+      <td>9.0</td>
+      <td>9.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>395 rows × 34 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">melted</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">id_vars</span><span class="o">=</span><span class="s1">&#39;student&#39;</span><span class="p">,</span> <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">,</span><span class="s1">&#39;G3&#39;</span><span class="p">],</span><span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;PrevYear&#39;</span><span class="p">,</span>
+                <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;Grade&quot;</span><span class="p">)</span>
+<span class="n">melted</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>student</th>
+      <th>PrevYear</th>
+      <th>Grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>G1</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>G1</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>G1</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>G1</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>G1</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1180</th>
+      <td>390</td>
+      <td>G3</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>1181</th>
+      <td>391</td>
+      <td>G3</td>
+      <td>16.0</td>
+    </tr>
+    <tr>
+      <th>1182</th>
+      <td>392</td>
+      <td>G3</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>1183</th>
+      <td>393</td>
+      <td>G3</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>1184</th>
+      <td>394</td>
+      <td>G3</td>
+      <td>9.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>1185 rows × 3 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">melted</span><span class="p">,</span><span class="n">hue</span><span class="o">=</span><span class="s1">&#39;PrevYear&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Grade&#39;</span><span class="p">,</span><span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Comparing Years 1-3 (Melted Vers)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Comparing Years 1-3 (Melted Vers)&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/Insights for Stakeholders_29_1.png" src="../../_images/Insights for Stakeholders_29_1.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Visualizing all 3 grades at the same time, we can see there is actually a gap in the middle of the scores. It seems no student ever receives a grade around 10. This may be something to investigate further in the future.</p></li>
+<li><p>It also looks like The # of students with scores near 0 increased each year.</p>
+<ul>
+<li><p>Is there a better way we can see how students performance changed each year?</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="visualizing-progress-by-grade-groups">
+<h3>Visualizing Progress By Grade Groups<a class="headerlink" href="#visualizing-progress-by-grade-groups" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Let’s define groups for each year’s scores by binning the scores.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()[[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">,</span><span class="s1">&#39;G3&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>G3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>395.000000</td>
+      <td>395.000000</td>
+      <td>395.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>10.908861</td>
+      <td>10.713924</td>
+      <td>10.415190</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>3.319195</td>
+      <td>3.761505</td>
+      <td>4.581443</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>3.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>8.000000</td>
+      <td>9.000000</td>
+      <td>8.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>11.000000</td>
+      <td>11.000000</td>
+      <td>11.000000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>13.000000</td>
+      <td>13.000000</td>
+      <td>14.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>19.000000</td>
+      <td>19.000000</td>
+      <td>20.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## defining bins and their labels</span>
+<span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">20</span><span class="p">]</span>
+
+<span class="n">bin_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1. low&#39;</span><span class="p">,</span><span class="s1">&#39;2. med&#39;</span><span class="p">,</span><span class="s1">&#39;3. high&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Visualizing bin cutoffs</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">melted</span><span class="p">,</span><span class="n">hue</span><span class="o">=</span><span class="s1">&#39;PrevYear&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Grade&#39;</span><span class="p">,</span><span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Comparing Years 1-3 (Melted Vers)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightcoral&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Low&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;skyblue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Med&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">bins</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;limegreen&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;High&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 20.0)
+</pre></div>
+</div>
+<img alt="../../_images/Insights for Stakeholders_35_1.png" src="../../_images/Insights for Stakeholders_35_1.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>ADD A BRIEF EXPLANATION</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">include_lowest</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="c1">#,labels=bin_labels)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0        [0, 8)
+1        [0, 8)
+2        [0, 8)
+3      [14, 20)
+4        [0, 8)
+         ...   
+390     [8, 14)
+391    [14, 20)
+392     [8, 14)
+393     [8, 14)
+394     [8, 14)
+Name: G1, Length: 395, dtype: category
+Categories (3, interval[int64, left]): [[0, 8) &lt; [8, 14) &lt; [14, 20)]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bins</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0, 8, 14, 20]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;First-Year Group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">],</span><span class="n">bins</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="n">bin_labels</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">include_lowest</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Final-Year Group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;G3&#39;</span><span class="p">],</span><span class="n">bins</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="n">bin_labels</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">include_lowest</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>student</th>
+      <th>school</th>
+      <th>sex</th>
+      <th>age</th>
+      <th>address</th>
+      <th>famsize</th>
+      <th>Pstatus</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>Mjob</th>
+      <th>...</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>G3</th>
+      <th>First-Year Group</th>
+      <th>Final-Year Group</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>18.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>A</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>at_home</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>1. low</td>
+      <td>1. low</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>1. low</td>
+      <td>1. low</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>...</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>10.0</td>
+      <td>7.0</td>
+      <td>8.0</td>
+      <td>10.0</td>
+      <td>1. low</td>
+      <td>2. med</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>health</td>
+      <td>...</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>15.0</td>
+      <td>14.0</td>
+      <td>15.0</td>
+      <td>3. high</td>
+      <td>3. high</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>GP</td>
+      <td>F</td>
+      <td>16.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>other</td>
+      <td>...</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>10.0</td>
+      <td>10.0</td>
+      <td>1. low</td>
+      <td>2. med</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>390</th>
+      <td>390</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>20.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>A</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>services</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>11.0</td>
+      <td>9.0</td>
+      <td>9.0</td>
+      <td>9.0</td>
+      <td>2. med</td>
+      <td>2. med</td>
+    </tr>
+    <tr>
+      <th>391</th>
+      <td>391</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>services</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>14.0</td>
+      <td>16.0</td>
+      <td>16.0</td>
+      <td>2. med</td>
+      <td>3. high</td>
+    </tr>
+    <tr>
+      <th>392</th>
+      <td>392</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>21.0</td>
+      <td>R</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>other</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>10.0</td>
+      <td>8.0</td>
+      <td>7.0</td>
+      <td>2. med</td>
+      <td>1. low</td>
+    </tr>
+    <tr>
+      <th>393</th>
+      <td>393</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>18.0</td>
+      <td>R</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>services</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>0.0</td>
+      <td>11.0</td>
+      <td>12.0</td>
+      <td>10.0</td>
+      <td>2. med</td>
+      <td>2. med</td>
+    </tr>
+    <tr>
+      <th>394</th>
+      <td>394</td>
+      <td>MS</td>
+      <td>M</td>
+      <td>19.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>other</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>8.0</td>
+      <td>9.0</td>
+      <td>9.0</td>
+      <td>1. low</td>
+      <td>2. med</td>
+    </tr>
+  </tbody>
+</table>
+<p>395 rows × 36 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Final-Year Group&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>student</th>
+      <th>school</th>
+      <th>sex</th>
+      <th>age</th>
+      <th>address</th>
+      <th>famsize</th>
+      <th>Pstatus</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>Mjob</th>
+      <th>...</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>G3</th>
+      <th>First-Year Group</th>
+      <th>Final-Year Group</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>0 rows × 36 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Final-Year Group&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2. med     220
+1. low     102
+3. high     73
+Name: Final-Year Group, dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">melted</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;student&#39;</span><span class="p">,</span><span class="s1">&#39;First-Year Group&#39;</span><span class="p">,</span><span class="s1">&#39;Final-Year Group&#39;</span><span class="p">],</span> 
+                 <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">,</span><span class="s1">&#39;G3&#39;</span><span class="p">],</span><span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;PrevYear&#39;</span><span class="p">,</span>
+                <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;Grade&quot;</span><span class="p">)</span>
+<span class="n">melted</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>student</th>
+      <th>First-Year Group</th>
+      <th>Final-Year Group</th>
+      <th>PrevYear</th>
+      <th>Grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1. low</td>
+      <td>1. low</td>
+      <td>G1</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1. low</td>
+      <td>1. low</td>
+      <td>G1</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>1. low</td>
+      <td>2. med</td>
+      <td>G1</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>3. high</td>
+      <td>3. high</td>
+      <td>G1</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>1. low</td>
+      <td>2. med</td>
+      <td>G1</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1180</th>
+      <td>390</td>
+      <td>2. med</td>
+      <td>2. med</td>
+      <td>G3</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>1181</th>
+      <td>391</td>
+      <td>2. med</td>
+      <td>3. high</td>
+      <td>G3</td>
+      <td>16.0</td>
+    </tr>
+    <tr>
+      <th>1182</th>
+      <td>392</td>
+      <td>2. med</td>
+      <td>1. low</td>
+      <td>G3</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>1183</th>
+      <td>393</td>
+      <td>2. med</td>
+      <td>2. med</td>
+      <td>G3</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>1184</th>
+      <td>394</td>
+      <td>1. low</td>
+      <td>2. med</td>
+      <td>G3</td>
+      <td>9.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>1185 rows × 5 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bins_info</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;1. low&#39;</span><span class="p">,{</span> <span class="s1">&#39;bins&#39;</span><span class="p">:(</span><span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> 
+                    <span class="s1">&#39;line_color&#39;</span><span class="p">:</span><span class="s1">&#39;darkred&#39;</span><span class="p">,</span><span class="s1">&#39;span_color&#39;</span><span class="p">:</span> <span class="s1">&#39;lightcoral&#39;</span><span class="p">}),</span>
+             <span class="p">(</span><span class="s1">&#39;2. med&#39;</span><span class="p">,{</span> <span class="s1">&#39;bins&#39;</span><span class="p">:(</span><span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                    <span class="s1">&#39;line_color&#39;</span><span class="p">:</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="s1">&#39;span_color&#39;</span><span class="p">:</span><span class="s1">&#39;skyblue&#39;</span><span class="p">}),</span>
+              <span class="p">(</span><span class="s1">&#39;3. high&#39;</span><span class="p">,{</span> <span class="s1">&#39;bins&#39;</span><span class="p">:(</span><span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">bins</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+                      <span class="s1">&#39;line_color&#39;</span><span class="p">:</span><span class="s1">&#39;forestgreen&#39;</span><span class="p">,</span><span class="s1">&#39;span_color&#39;</span><span class="p">:</span><span class="s1">&#39;limegreen&#39;</span><span class="p">})</span>
+            <span class="p">]</span>
+<span class="n">bins_info</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[(&#39;1. low&#39;,
+  {&#39;bins&#39;: (0, 8), &#39;line_color&#39;: &#39;darkred&#39;, &#39;span_color&#39;: &#39;lightcoral&#39;}),
+ (&#39;2. med&#39;, {&#39;bins&#39;: (8, 14), &#39;line_color&#39;: &#39;blue&#39;, &#39;span_color&#39;: &#39;skyblue&#39;}),
+ (&#39;3. high&#39;,
+  {&#39;bins&#39;: (14, 20), &#39;line_color&#39;: &#39;forestgreen&#39;, &#39;span_color&#39;: &#39;limegreen&#39;})]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## slice out list of line colors</span>
+<span class="n">line_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;line_color&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bins_info</span><span class="p">]</span>
+<span class="n">line_colors</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;darkred&#39;, &#39;blue&#39;, &#39;forestgreen&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Plot visual using Final year Groups for colors</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">parallel_coordinates</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="s1">&#39;Final-Year Group&#39;</span><span class="p">,</span><span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">,</span><span class="s1">&#39;G3&#39;</span><span class="p">],</span>
+                                 <span class="n">color</span><span class="o">=</span> <span class="n">line_colors</span><span class="p">,</span><span class="n">sort_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Year 1-3 grades - Colored by Final Grade Groups&quot;</span><span class="p">);</span>
+
+<span class="c1">## Annotate</span>
+<span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">grp_dict</span> <span class="ow">in</span> <span class="n">bins_info</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axhspan</span><span class="p">(</span><span class="n">grp_dict</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">grp_dict</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+               <span class="n">color</span><span class="o">=</span><span class="n">grp_dict</span><span class="p">[</span><span class="s1">&#39;span_color&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 20.0)
+</pre></div>
+</div>
+<img alt="../../_images/Insights for Stakeholders_46_1.png" src="../../_images/Insights for Stakeholders_46_1.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Looking at our parallel coordinates plot - grouped by Final Grades, we can see that there are students who were in the low group for G3 that had been in the med-group range. So students whose performance dropped from average to below average over the years.</p></li>
+<li><p>We can also see that there were some students in the high group whose G1 scores were in the med range, showing that they improved their performance over years 1-3.</p></li>
+<li><p>We also notice that there are a lot of zeroes that appear in G2 and G3, what we can see all that lines that were 0 for G2 stayed at 0 for G3.</p></li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Now that we have an idea of the target we are analyzing, we are ready to move onto modeling!</p></li>
+<li><p>We will start by exploring answering our stakeholder’s question(s) with regression modeling.</p></li>
+<li><p>Let’s get started!</p></li>
+</ul>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="appendix">
+<h1>APPENDIX<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;stop here&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">Exception</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">Input In [24],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;stop here&quot;</span><span class="p">)</span>
+
+<span class="ne">Exception</span>: stop here
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## exaple from https://pandas.pydata.org/docs/reference/api/pandas.plotting.parallel_coordinates.html</span>
+<span class="c1">## want a version for g1-g3</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s1">&#39;https://raw.github.com/pandas-dev/&#39;</span>
+    <span class="s1">&#39;pandas/main/pandas/tests/io/data/csv/iris.csv&#39;</span>
+<span class="p">)</span>
+<span class="n">df2</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">parallel_coordinates</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "dojo-env"
+        },
+        kernelOptions: {
+            kernelName: "dojo-env",
+            path: "./LESSONS/0_insights_for_stakeholders"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'dojo-env'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../../intro.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Welcome to your Jupyter Book</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Regression Coefficients - Revisited</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Coding Dojo Data Science<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

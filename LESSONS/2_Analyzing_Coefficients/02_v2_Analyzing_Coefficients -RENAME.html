@@ -1,0 +1,3453 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Analyzing Coefficients - V2 &#8212; Stack 5: Data Visualization - Model Insights</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Model Explainers - For Regression" href="../4_Model_Explainers-Regression/4_Model_Explainers-Regression.html" />
+    <link rel="prev" title="Regression Coefficients - Revisited" href="../1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/dojo-logo.jpeg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Stack 5: Data Visualization - Model Insights</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to your Jupyter Book
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../0_insights_for_stakeholders/Insights%20for%20Stakeholders.html">
+   Insights for Stakeholders
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.html">
+   Regression Coefficients - Revisited
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Analyzing Coefficients - V2
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../4_Model_Explainers-Regression/4_Model_Explainers-Regression.html">
+   Model Explainers - For Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../5_Explaining_Classifications/5_Explaining_Classifications.html">
+   Model Explainers - For Classification
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/coding-dojo-data-science/curriculum-model-insights/main?urlpath=tree/docs/LESSONS/2_Analyzing_Coefficients/02_v2_Analyzing_Coefficients -RENAME.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/coding-dojo-data-science/curriculum-model-insights"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/LESSONS/2_Analyzing_Coefficients/02_v2_Analyzing_Coefficients -RENAME.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Analyzing Coefficients - V2
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lesson-objectives">
+     Lesson Objectives
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#our-previous-results">
+   Our Previous Results
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#code-model-from-previous-lesson">
+     Code/Model From Previous Lesson
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#iterating-on-our-model">
+   Iterating On Our Model
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#removing-the-intercept">
+     Removing the Intercept
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#to-intercept-or-not-to-intercept">
+       To Intercept or Not To Intercept?
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scaling-our-features">
+     Scaling Our Features
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#to-do">
+   📌 TO DO
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#revisiting-our-business-case">
+   Revisiting Our Business Case
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#modeling-for-new-students">
+     Modeling - For New Students
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#decide-if-using-scaled">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         DECIDE
+        </span>
+        <span class="pre">
+         IF
+        </span>
+        <span class="pre">
+         USING
+        </span>
+        <span class="pre">
+         SCALED
+        </span>
+       </code>
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#unsaled">
+         Unsaled
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#scaled">
+         Scaled
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#final-comparison">
+       Final Comparison
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#selecting-our-final-model-for-extracting-insights">
+     Selecting Our Final Model for Extracting Insights
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Analyzing Coefficients - V2</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Analyzing Coefficients - V2
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lesson-objectives">
+     Lesson Objectives
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#our-previous-results">
+   Our Previous Results
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#code-model-from-previous-lesson">
+     Code/Model From Previous Lesson
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#iterating-on-our-model">
+   Iterating On Our Model
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#removing-the-intercept">
+     Removing the Intercept
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#to-intercept-or-not-to-intercept">
+       To Intercept or Not To Intercept?
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scaling-our-features">
+     Scaling Our Features
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#to-do">
+   📌 TO DO
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#revisiting-our-business-case">
+   Revisiting Our Business Case
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#modeling-for-new-students">
+     Modeling - For New Students
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#decide-if-using-scaled">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         DECIDE
+        </span>
+        <span class="pre">
+         IF
+        </span>
+        <span class="pre">
+         USING
+        </span>
+        <span class="pre">
+         SCALED
+        </span>
+       </code>
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#unsaled">
+         Unsaled
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#scaled">
+         Scaled
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#final-comparison">
+       Final Comparison
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#selecting-our-final-model-for-extracting-insights">
+     Selecting Our Final Model for Extracting Insights
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="analyzing-coefficients-v2">
+<h1>Analyzing Coefficients - V2<a class="headerlink" href="#analyzing-coefficients-v2" title="Permalink to this headline">#</a></h1>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RENAME:</span> <span class="pre">we</span> <span class="pre">started</span> <span class="pre">to</span> <span class="pre">analyze</span> <span class="pre">the</span> <span class="pre">coefficents</span> <span class="pre">in</span> <span class="pre">lesson</span> <span class="pre">01-v2.</span> <span class="pre">Consider</span> <span class="pre">a</span> <span class="pre">new</span> <span class="pre">name</span> <span class="pre">for</span> <span class="pre">this</span> <span class="pre">like</span> <span class="pre">&quot;iterating</span> <span class="pre">on</span> <span class="pre">our</span> <span class="pre">coefficients&quot;</span> <span class="pre">or</span> <span class="pre">&quot;thoughtful</span> <span class="pre">selection</span> <span class="pre">of</span> <span class="pre">coefficients&quot;,etc</span></code></p></li>
+</ul>
+<section id="lesson-objectives">
+<h2>Lesson Objectives<a class="headerlink" href="#lesson-objectives" title="Permalink to this headline">#</a></h2>
+<p>By the end of this lesson, students will be able to:</p>
+<ul class="simple">
+<li><p>Extract and visualize coefficients in more helpful formats.</p></li>
+<li><p><em><strong>Interpret coefficients for raw data vs scaled data.</strong></em></p></li>
+<li><p>Use coefficient values to inform modeling choices (for insights).</p></li>
+<li><p>Encode nominal categories as ordinal (based on the target)</p></li>
+<li><p>Determine which version of the coefficients would be best for extracting insights and recommendations for a stakeholder.</p></li>
+</ul>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="our-previous-results">
+<h1>Our Previous Results<a class="headerlink" href="#our-previous-results" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+
+<span class="c1">## Reviewing the options used</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.float_format&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">,.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1">## Customization Options</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">([</span><span class="s1">&#39;fivethirtyeight&#39;</span><span class="p">,</span><span class="s1">&#39;seaborn-talk&#39;</span><span class="p">])</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.facecolor&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;white&#39;</span>
+
+<span class="c1">## additional required imports</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span><span class="p">,</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">make_column_transformer</span><span class="p">,</span> <span class="n">make_column_selector</span><span class="p">,</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">make_pipeline</span><span class="p">,</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+<span class="kn">import</span> <span class="nn">joblib</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="code-model-from-previous-lesson">
+<h2>Code/Model From Previous Lesson<a class="headerlink" href="#code-model-from-previous-lesson" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="c1">## Customization Options</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">([</span><span class="s1">&#39;fivethirtyeight&#39;</span><span class="p">,</span><span class="s1">&#39;seaborn-talk&#39;</span><span class="p">])</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.facecolor&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;white&#39;</span>
+
+<span class="c1">## additional required imports</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span><span class="p">,</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">make_column_transformer</span><span class="p">,</span> <span class="n">make_column_selector</span><span class="p">,</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">make_pipeline</span><span class="p">,</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+
+<span class="n">SEED</span> <span class="o">=</span> <span class="mi">321</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Load in the King&#39;s County housing dataset and display the head and info</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vS6xDKNpWkBBdhZSqepy48bXo55QnRv1Xy6tXTKYzZLMPjZozMfYhHQjAcC8uj9hQ/pub?output=xlsx&quot;</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;student-mat&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 395 entries, 0 to 394
+Data columns (total 33 columns):
+ #   Column      Non-Null Count  Dtype  
+---  ------      --------------  -----  
+ 0   school      395 non-null    object 
+ 1   sex         395 non-null    object 
+ 2   age         395 non-null    float64
+ 3   address     395 non-null    object 
+ 4   famsize     395 non-null    object 
+ 5   Pstatus     395 non-null    object 
+ 6   Medu        395 non-null    float64
+ 7   Fedu        395 non-null    float64
+ 8   Mjob        395 non-null    object 
+ 9   Fjob        395 non-null    object 
+ 10  reason      395 non-null    object 
+ 11  guardian    395 non-null    object 
+ 12  traveltime  395 non-null    float64
+ 13  studytime   395 non-null    float64
+ 14  failures    395 non-null    float64
+ 15  schoolsup   395 non-null    object 
+ 16  famsup      395 non-null    object 
+ 17  paid        395 non-null    object 
+ 18  activities  395 non-null    object 
+ 19  nursery     395 non-null    object 
+ 20  higher      395 non-null    object 
+ 21  internet    395 non-null    object 
+ 22  romantic    395 non-null    object 
+ 23  famrel      395 non-null    float64
+ 24  freetime    395 non-null    float64
+ 25  goout       395 non-null    float64
+ 26  Dalc        395 non-null    float64
+ 27  Walc        395 non-null    float64
+ 28  health      395 non-null    float64
+ 29  absences    395 non-null    float64
+ 30  G1          395 non-null    float64
+ 31  G2          395 non-null    float64
+ 32  G3          395 non-null    float64
+dtypes: float64(16), object(17)
+memory usage: 102.0+ KB
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>school</th>
+      <th>sex</th>
+      <th>age</th>
+      <th>address</th>
+      <th>famsize</th>
+      <th>Pstatus</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>Mjob</th>
+      <th>Fjob</th>
+      <th>reason</th>
+      <th>guardian</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>schoolsup</th>
+      <th>famsup</th>
+      <th>paid</th>
+      <th>activities</th>
+      <th>nursery</th>
+      <th>higher</th>
+      <th>internet</th>
+      <th>romantic</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>G3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>18.00</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>A</td>
+      <td>4.00</td>
+      <td>4.00</td>
+      <td>at_home</td>
+      <td>teacher</td>
+      <td>course</td>
+      <td>mother</td>
+      <td>2.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>no</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>no</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>4.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>6.00</td>
+      <td>5.00</td>
+      <td>6.00</td>
+      <td>6.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>17.00</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>at_home</td>
+      <td>other</td>
+      <td>course</td>
+      <td>father</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>no</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>5.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>4.00</td>
+      <td>5.00</td>
+      <td>5.00</td>
+      <td>6.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.00</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>at_home</td>
+      <td>other</td>
+      <td>other</td>
+      <td>mother</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>3.00</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>2.00</td>
+      <td>2.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>10.00</td>
+      <td>7.00</td>
+      <td>8.00</td>
+      <td>10.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.00</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>4.00</td>
+      <td>2.00</td>
+      <td>health</td>
+      <td>services</td>
+      <td>home</td>
+      <td>mother</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>3.00</td>
+      <td>2.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>5.00</td>
+      <td>2.00</td>
+      <td>15.00</td>
+      <td>14.00</td>
+      <td>15.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>16.00</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>other</td>
+      <td>other</td>
+      <td>home</td>
+      <td>father</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>yes</td>
+      <td>yes</td>
+      <td>no</td>
+      <td>no</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>5.00</td>
+      <td>4.00</td>
+      <td>6.00</td>
+      <td>10.00</td>
+      <td>10.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ## Load in the King&#39;s County housing dataset and display the head and info</span>
+<span class="c1"># df = pd.read_csv(&quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vSEZQEzxja7Hmj5tr5nc52QqBvFQdCAGb52e1FRK1PDT2_TQrS6rY_TR9tjZjKaMbCy1m5217sVmI5q/pub?output=csv&quot;)</span>
+
+<span class="c1"># ## Dropping some features for time</span>
+<span class="c1"># df = df.drop(columns=[&#39;date&#39;])</span>
+
+
+<span class="c1"># ## Make the house ids the index</span>
+<span class="c1"># df = df.set_index(&#39;id&#39;)</span>
+
+<span class="c1"># ## drop lat/long</span>
+<span class="c1"># df = df.drop(columns=[&#39;lat&#39;,&#39;long&#39;])</span>
+<span class="c1"># ## Treating zipcode as a category</span>
+<span class="c1"># df[&#39;zipcode&#39;] = df[&#39;zipcode&#39;].astype(str)</span>
+
+<span class="c1"># df.info()</span>
+<span class="c1"># df.head()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ### Train Test Split</span>
+<span class="c1">## Make x and y variables</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;G3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G3&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1">## train-test-split with random state for reproducibility</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
+
+
+<span class="c1"># ### Preprocessing + ColumnTransformer</span>
+
+<span class="c1">## make categorical &amp; numeric selectors</span>
+<span class="n">cat_sel</span> <span class="o">=</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+<span class="n">num_sel</span> <span class="o">=</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+
+<span class="c1">## make pipelines for categorical vs numeric data</span>
+<span class="n">cat_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span>
+                                       <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;MISSING&#39;</span><span class="p">),</span>
+                         <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="s1">&#39;if_binary&#39;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">num_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+
+<span class="c1">## make the preprocessing column transformer</span>
+<span class="n">preprocessor</span> <span class="o">=</span> <span class="n">make_column_transformer</span><span class="p">((</span><span class="n">num_pipe</span><span class="p">,</span> <span class="n">num_sel</span><span class="p">),</span>
+                                       <span class="p">(</span><span class="n">cat_pipe</span><span class="p">,</span><span class="n">cat_sel</span><span class="p">),</span>
+                                      <span class="n">verbose_feature_names_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">## fit column transformer and run get_feature_names_out</span>
+<span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">feature_names</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+
+<span class="n">X_train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+
+<span class="n">X_test_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">X_test_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>school_MS</th>
+      <th>sex_M</th>
+      <th>address_U</th>
+      <th>famsize_LE3</th>
+      <th>Pstatus_T</th>
+      <th>Mjob_at_home</th>
+      <th>Mjob_health</th>
+      <th>Mjob_other</th>
+      <th>Mjob_services</th>
+      <th>Mjob_teacher</th>
+      <th>Fjob_at_home</th>
+      <th>Fjob_health</th>
+      <th>Fjob_other</th>
+      <th>Fjob_services</th>
+      <th>Fjob_teacher</th>
+      <th>reason_course</th>
+      <th>reason_home</th>
+      <th>reason_other</th>
+      <th>reason_reputation</th>
+      <th>guardian_father</th>
+      <th>guardian_mother</th>
+      <th>guardian_other</th>
+      <th>schoolsup_yes</th>
+      <th>famsup_yes</th>
+      <th>paid_yes</th>
+      <th>activities_yes</th>
+      <th>nursery_yes</th>
+      <th>higher_yes</th>
+      <th>internet_yes</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>58</th>
+      <td>15.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>5.00</td>
+      <td>2.00</td>
+      <td>9.00</td>
+      <td>10.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>338</th>
+      <td>18.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>4.00</td>
+      <td>0.00</td>
+      <td>5.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>7.00</td>
+      <td>16.00</td>
+      <td>15.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>17.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>2.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>15.00</td>
+      <td>15.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">r2_score</span><span class="p">,</span> <span class="n">mean_absolute_error</span><span class="p">,</span> <span class="n">mean_squared_error</span>
+<span class="k">def</span> <span class="nf">evaluate_linreg</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span><span class="n">y_test</span><span class="p">,</span> <span class="n">return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">get_coeffs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">coeffs_name</span> <span class="o">=</span> <span class="s2">&quot;Coefficients&quot;</span><span class="p">):</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">y_hat_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">r2_train</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_hat_train</span><span class="p">)</span>
+    <span class="n">rmse_train</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_hat_train</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;Data&#39;</span><span class="p">:</span><span class="s1">&#39;Train&#39;</span><span class="p">,</span> <span class="s1">&#39;R^2&#39;</span><span class="p">:</span><span class="n">r2_train</span><span class="p">,</span> <span class="s2">&quot;RMSE&quot;</span><span class="p">:</span> <span class="n">rmse_train</span><span class="p">})</span>
+    
+    <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">r2_test</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_hat_test</span><span class="p">)</span>
+    <span class="n">rmse_test</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_hat_test</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;Data&#39;</span><span class="p">:</span><span class="s1">&#39;Test&#39;</span><span class="p">,</span> <span class="s1">&#39;R^2&#39;</span><span class="p">:</span><span class="n">r2_test</span><span class="p">,</span> <span class="s2">&quot;RMSE&quot;</span><span class="p">:</span> <span class="n">rmse_test</span><span class="p">})</span>
+    
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+    <span class="n">results_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Test&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">results_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">]</span>
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">T</span>
+    
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">get_coeffs</span><span class="p">:</span>
+        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">intercept_</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">coeffs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;intercept&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">intercept_</span>
+    <span class="n">coeffs</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">coeffs_name</span>
+    <span class="k">return</span> <span class="n">coeffs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">coeffs_orig</span> <span class="o">=</span> <span class="n">evaluate_linreg</span><span class="p">(</span><span class="n">lin_reg</span><span class="p">,</span> <span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test_df</span><span class="p">,</span><span class="n">y_test</span><span class="p">,</span>
+                             <span class="n">coeffs_name</span><span class="o">=</span><span class="s1">&#39;Original&#39;</span><span class="p">)</span>
+<span class="n">coeffs_orig</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Data  Train  Test  Delta
+R^2    0.85  0.81  -0.04
+RMSE   1.83  1.85   0.02
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -0.22
+Medu                 0.29
+Fedu                -0.18
+traveltime           0.19
+studytime           -0.22
+failures            -0.10
+famrel               0.31
+freetime             0.02
+goout               -0.02
+Dalc                -0.21
+Walc                 0.26
+health               0.03
+absences             0.05
+G1                   0.14
+G2                   0.99
+school_MS            0.38
+sex_M               -0.01
+address_U            0.15
+famsize_LE3          0.01
+Pstatus_T            0.38
+Mjob_at_home        -0.05
+Mjob_health         -0.02
+Mjob_other           0.16
+Mjob_services        0.12
+Mjob_teacher        -0.21
+Fjob_at_home         0.33
+Fjob_health          0.38
+Fjob_other          -0.11
+Fjob_services       -0.54
+Fjob_teacher        -0.05
+reason_course       -0.09
+reason_home         -0.42
+reason_other         0.30
+reason_reputation    0.21
+guardian_father     -0.20
+guardian_mother      0.07
+guardian_other       0.13
+schoolsup_yes        0.34
+famsup_yes           0.16
+paid_yes             0.16
+activities_yes      -0.34
+nursery_yes         -0.21
+higher_yes           0.82
+internet_yes        -0.09
+romantic_yes        -0.29
+intercept           -0.95
+Name: Original, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="iterating-on-our-model">
+<h1>Iterating On Our Model<a class="headerlink" href="#iterating-on-our-model" title="Permalink to this headline">#</a></h1>
+<section id="removing-the-intercept">
+<h2>Removing the Intercept<a class="headerlink" href="#removing-the-intercept" title="Permalink to this headline">#</a></h2>
+<blockquote>
+<div><p>First, we can remove the intercept from our model, which will force the LinearRegression to explain all of the price without being free to calculate whatever intercept would help the model.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">coeffs_no_int</span> <span class="o">=</span> <span class="n">evaluate_linreg</span><span class="p">(</span><span class="n">lin_reg</span><span class="p">,</span> <span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test_df</span><span class="p">,</span><span class="n">y_test</span><span class="p">,</span>
+                               <span class="n">coeffs_name</span><span class="o">=</span><span class="s1">&#39;No Intercept&#39;</span><span class="p">)</span>
+<span class="n">coeffs_no_int</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Data  Train  Test  Delta
+R^2    0.85  0.81  -0.04
+RMSE   1.83  1.85   0.02
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fjob_services       -0.73
+reason_home         -0.66
+guardian_father     -0.52
+Mjob_teacher        -0.40
+activities_yes      -0.34
+reason_course       -0.33
+Fjob_other          -0.31
+romantic_yes        -0.29
+guardian_mother     -0.25
+Mjob_at_home        -0.24
+Fjob_teacher        -0.24
+age                 -0.22
+studytime           -0.22
+Mjob_health         -0.21
+Dalc                -0.21
+nursery_yes         -0.21
+guardian_other      -0.19
+Fedu                -0.18
+failures            -0.10
+internet_yes        -0.09
+Mjob_services       -0.07
+Mjob_other          -0.03
+reason_reputation   -0.03
+goout               -0.02
+sex_M               -0.01
+famsize_LE3          0.01
+freetime             0.02
+health               0.03
+absences             0.05
+reason_other         0.06
+Fjob_at_home         0.13
+G1                   0.14
+address_U            0.15
+famsup_yes           0.16
+paid_yes             0.16
+Fjob_health          0.18
+traveltime           0.19
+Walc                 0.26
+Medu                 0.29
+famrel               0.31
+schoolsup_yes        0.34
+school_MS            0.38
+Pstatus_T            0.38
+higher_yes           0.82
+G2                   0.99
+Name: No Intercept, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<section id="to-intercept-or-not-to-intercept">
+<h3>To Intercept or Not To Intercept?<a class="headerlink" href="#to-intercept-or-not-to-intercept" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">coeffs_orig</span><span class="p">,</span> <span class="n">coeffs_no_int</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">compare</span> <span class="o">=</span> <span class="n">compare</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Original&#39;</span><span class="p">)</span>
+<span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Diff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compare</span><span class="p">[</span><span class="s1">&#39;No Intercept&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Original&#39;</span><span class="p">]</span>
+<span class="n">compare</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Original</th>
+      <th>No Intercept</th>
+      <th>Diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>intercept</th>
+      <td>-0.95</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Fjob_services</th>
+      <td>-0.54</td>
+      <td>-0.73</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>reason_home</th>
+      <td>-0.42</td>
+      <td>-0.66</td>
+      <td>-0.24</td>
+    </tr>
+    <tr>
+      <th>activities_yes</th>
+      <td>-0.34</td>
+      <td>-0.34</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>romantic_yes</th>
+      <td>-0.29</td>
+      <td>-0.29</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>age</th>
+      <td>-0.22</td>
+      <td>-0.22</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>studytime</th>
+      <td>-0.22</td>
+      <td>-0.22</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>Dalc</th>
+      <td>-0.21</td>
+      <td>-0.21</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>nursery_yes</th>
+      <td>-0.21</td>
+      <td>-0.21</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Mjob_teacher</th>
+      <td>-0.21</td>
+      <td>-0.40</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>guardian_father</th>
+      <td>-0.20</td>
+      <td>-0.52</td>
+      <td>-0.32</td>
+    </tr>
+    <tr>
+      <th>Fedu</th>
+      <td>-0.18</td>
+      <td>-0.18</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>Fjob_other</th>
+      <td>-0.11</td>
+      <td>-0.31</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>failures</th>
+      <td>-0.10</td>
+      <td>-0.10</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>internet_yes</th>
+      <td>-0.09</td>
+      <td>-0.09</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>reason_course</th>
+      <td>-0.09</td>
+      <td>-0.33</td>
+      <td>-0.24</td>
+    </tr>
+    <tr>
+      <th>Mjob_at_home</th>
+      <td>-0.05</td>
+      <td>-0.24</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>Fjob_teacher</th>
+      <td>-0.05</td>
+      <td>-0.24</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>Mjob_health</th>
+      <td>-0.02</td>
+      <td>-0.21</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>goout</th>
+      <td>-0.02</td>
+      <td>-0.02</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>sex_M</th>
+      <td>-0.01</td>
+      <td>-0.01</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>famsize_LE3</th>
+      <td>0.01</td>
+      <td>0.01</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>freetime</th>
+      <td>0.02</td>
+      <td>0.02</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>health</th>
+      <td>0.03</td>
+      <td>0.03</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>absences</th>
+      <td>0.05</td>
+      <td>0.05</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>guardian_mother</th>
+      <td>0.07</td>
+      <td>-0.25</td>
+      <td>-0.32</td>
+    </tr>
+    <tr>
+      <th>Mjob_services</th>
+      <td>0.12</td>
+      <td>-0.07</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>guardian_other</th>
+      <td>0.13</td>
+      <td>-0.19</td>
+      <td>-0.32</td>
+    </tr>
+    <tr>
+      <th>G1</th>
+      <td>0.14</td>
+      <td>0.14</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>address_U</th>
+      <td>0.15</td>
+      <td>0.15</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>famsup_yes</th>
+      <td>0.16</td>
+      <td>0.16</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>paid_yes</th>
+      <td>0.16</td>
+      <td>0.16</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Mjob_other</th>
+      <td>0.16</td>
+      <td>-0.03</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>traveltime</th>
+      <td>0.19</td>
+      <td>0.19</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>reason_reputation</th>
+      <td>0.21</td>
+      <td>-0.03</td>
+      <td>-0.24</td>
+    </tr>
+    <tr>
+      <th>Walc</th>
+      <td>0.26</td>
+      <td>0.26</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Medu</th>
+      <td>0.29</td>
+      <td>0.29</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>reason_other</th>
+      <td>0.30</td>
+      <td>0.06</td>
+      <td>-0.24</td>
+    </tr>
+    <tr>
+      <th>famrel</th>
+      <td>0.31</td>
+      <td>0.31</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>Fjob_at_home</th>
+      <td>0.33</td>
+      <td>0.13</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>schoolsup_yes</th>
+      <td>0.34</td>
+      <td>0.34</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Fjob_health</th>
+      <td>0.38</td>
+      <td>0.18</td>
+      <td>-0.19</td>
+    </tr>
+    <tr>
+      <th>school_MS</th>
+      <td>0.38</td>
+      <td>0.38</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Pstatus_T</th>
+      <td>0.38</td>
+      <td>0.38</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>higher_yes</th>
+      <td>0.82</td>
+      <td>0.82</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>G2</th>
+      <td>0.99</td>
+      <td>0.99</td>
+      <td>-0.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<ul class="simple">
+<li><p>At this point, there is a valid argument for using either model as the basis for our stakeholder recommendations.</p></li>
+<li><p>As long as you are comfortable explaining the intercept as the baseline house price (when all Xs are 0), then it is not difficult to express the findings to a stakeholder.</p></li>
+<li><p>Let’s see if either version looks better when visualzied.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span><span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Original&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Coefficients + Intercept&#39;</span><span class="p">)</span>
+<span class="n">compare</span><span class="p">[</span><span class="s1">&#39;No Intercept&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;No Intercept&#39;</span><span class="p">)</span>
+
+<span class="p">[</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">]</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/02_v2_Analyzing_Coefficients -RENAME_20_0.png" src="../../_images/02_v2_Analyzing_Coefficients -RENAME_20_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Diff&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Coeff Change W/out Intercept&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/02_v2_Analyzing_Coefficients -RENAME_21_0.png" src="../../_images/02_v2_Analyzing_Coefficients -RENAME_21_0.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>We can see that by removing the intercept from our model, which had a value of -.95, we have changed the value of several, but not all of the other coefficients.</p></li>
+<li><p>Notice that, in this case, when our model removed a negative baseline value (the intercept), that many of the other coefficients became had a negative change. While this will not always be the case, it does demonstrate how our model has to change the coefficients values when it no longer can calculate a starting grade before factoring in the features.</p></li>
+</ul>
+</section>
+</section>
+<section id="scaling-our-features">
+<h2>Scaling Our Features<a class="headerlink" href="#scaling-our-features" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Since we have entirely numeric features, we can simply scale our already-processed X_train/X_test variables by creating a new scaler.</p>
+<ul>
+<li><p>Note: for more complicated datasets, we would want to create a new precprocessor where we add the scaler to the numeric pipeline.</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ### Preprocessing + ColumnTransformer</span>
+<span class="n">num_pipe_scale</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">),</span> <span class="n">StandardScaler</span><span class="p">())</span>
+
+<span class="c1">## make the preprocessing column transformer</span>
+<span class="n">preprocessor_scale</span> <span class="o">=</span> <span class="n">make_column_transformer</span><span class="p">((</span><span class="n">num_pipe_scale</span><span class="p">,</span> <span class="n">num_sel</span><span class="p">),</span>
+                                       <span class="p">(</span><span class="n">cat_pipe</span><span class="p">,</span><span class="n">cat_sel</span><span class="p">),</span>
+                                      <span class="n">verbose_feature_names_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">## fit column transformer and run get_feature_names_out</span>
+<span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">feature_names</span> <span class="o">=</span> <span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+
+<span class="n">X_train_scaled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+
+<span class="n">X_test_scaled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">X_test_scaled</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>school_MS</th>
+      <th>sex_M</th>
+      <th>address_U</th>
+      <th>famsize_LE3</th>
+      <th>Pstatus_T</th>
+      <th>Mjob_at_home</th>
+      <th>Mjob_health</th>
+      <th>Mjob_other</th>
+      <th>Mjob_services</th>
+      <th>Mjob_teacher</th>
+      <th>Fjob_at_home</th>
+      <th>Fjob_health</th>
+      <th>Fjob_other</th>
+      <th>Fjob_services</th>
+      <th>Fjob_teacher</th>
+      <th>reason_course</th>
+      <th>reason_home</th>
+      <th>reason_other</th>
+      <th>reason_reputation</th>
+      <th>guardian_father</th>
+      <th>guardian_mother</th>
+      <th>guardian_other</th>
+      <th>schoolsup_yes</th>
+      <th>famsup_yes</th>
+      <th>paid_yes</th>
+      <th>activities_yes</th>
+      <th>nursery_yes</th>
+      <th>higher_yes</th>
+      <th>internet_yes</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>58</th>
+      <td>-1.30</td>
+      <td>-1.61</td>
+      <td>-0.49</td>
+      <td>-0.65</td>
+      <td>-0.01</td>
+      <td>-0.44</td>
+      <td>0.07</td>
+      <td>-0.17</td>
+      <td>-0.94</td>
+      <td>-0.52</td>
+      <td>-0.98</td>
+      <td>1.03</td>
+      <td>-0.47</td>
+      <td>-0.56</td>
+      <td>-0.17</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>338</th>
+      <td>1.01</td>
+      <td>0.22</td>
+      <td>0.43</td>
+      <td>-0.65</td>
+      <td>2.38</td>
+      <td>-0.44</td>
+      <td>1.18</td>
+      <td>-0.17</td>
+      <td>-0.05</td>
+      <td>-0.52</td>
+      <td>-0.98</td>
+      <td>-1.81</td>
+      <td>0.17</td>
+      <td>1.53</td>
+      <td>1.13</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>0.24</td>
+      <td>1.14</td>
+      <td>0.43</td>
+      <td>-0.65</td>
+      <td>1.18</td>
+      <td>-0.44</td>
+      <td>0.07</td>
+      <td>-1.16</td>
+      <td>-0.94</td>
+      <td>-0.52</td>
+      <td>-0.22</td>
+      <td>-0.39</td>
+      <td>-0.72</td>
+      <td>1.23</td>
+      <td>1.13</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">coeffs_scaled</span> <span class="o">=</span> <span class="n">evaluate_linreg</span><span class="p">(</span><span class="n">lin_reg</span><span class="p">,</span> <span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test_scaled</span><span class="p">,</span><span class="n">y_test</span><span class="p">)</span>
+<span class="n">coeffs_scaled</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Data  Train  Test  Delta
+R^2    0.85  0.81  -0.04
+RMSE   1.83  1.85   0.02
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -0.29
+Medu                 0.32
+Fedu                -0.19
+traveltime           0.14
+studytime           -0.18
+failures            -0.07
+famrel               0.28
+freetime             0.02
+goout               -0.02
+Dalc                -0.19
+Walc                 0.34
+health               0.04
+absences             0.42
+G1                   0.47
+G2                   3.81
+school_MS            0.38
+sex_M               -0.01
+address_U            0.15
+famsize_LE3          0.01
+Pstatus_T            0.38
+Mjob_at_home         1.88
+Mjob_health          1.91
+Mjob_other           2.10
+Mjob_services        2.05
+Mjob_teacher         1.73
+Fjob_at_home         2.26
+Fjob_health          2.31
+Fjob_other           1.82
+Fjob_services        1.40
+Fjob_teacher         1.89
+reason_course        2.33
+reason_home          2.00
+reason_other         2.72
+reason_reputation    2.63
+guardian_father      3.03
+guardian_mother      3.30
+guardian_other       3.36
+schoolsup_yes        0.34
+famsup_yes           0.16
+paid_yes             0.16
+activities_yes      -0.34
+nursery_yes         -0.21
+higher_yes           0.82
+internet_yes        -0.09
+romantic_yes        -0.29
+Name: Coefficients, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">coeffs_scaled</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">)</span>
+<span class="c1"># compare[&#39;Original&#39;].plot(kind=&#39;barh&#39;,color=&#39;blue&#39;,ax=axes[0],title=&#39;Coefficients + Intercept&#39;)</span>
+<span class="c1"># compare[&#39;No Intercept&#39;].plot(kind=&#39;barh&#39;,color=&#39;green&#39;,ax=axes[1],title=&#39;No Intercept&#39;)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.lines.Line2D at 0x2811f8160&gt;
+</pre></div>
+</div>
+<img alt="../../_images/02_v2_Analyzing_Coefficients -RENAME_27_1.png" src="../../_images/02_v2_Analyzing_Coefficients -RENAME_27_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="to-do">
+<h1>📌 TO DO<a class="headerlink" href="#to-do" title="Permalink to this headline">#</a></h1>
+<ul class="simple">
+<li><p>visualize and discuss the scaled coefficients</p></li>
+<li><p>select scaled vs not scaled</p></li>
+</ul>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="revisiting-our-business-case">
+<h1>Revisiting Our Business Case<a class="headerlink" href="#revisiting-our-business-case" title="Permalink to this headline">#</a></h1>
+<ul class="simple">
+<li><p>Thus far, we have done all of our modeling under the assumption that we want to predict how well current students will do in their final year.</p></li>
+<li><p>However, the stakeholder likely cares more about identifying how students will perform at very beginning of their Year 1.</p>
+<ul>
+<li><p>Let’s keep this in mind and remove any features that we would not have known when the student was at the beginning of Year 1.</p></li>
+</ul>
+</li>
+</ul>
+<section id="modeling-for-new-students">
+<h2>Modeling - For New Students<a class="headerlink" href="#modeling-for-new-students" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>We <strong>must</strong> remove:</p>
+<ul>
+<li><p>G1: We wouldn’t know year 1 grades yet.</p></li>
+<li><p>G2: We wouldn’t know year 1 grades yet.</p></li>
+</ul>
+</li>
+<li><p>We should <strong>probably</strong> remove:</p>
+<ul>
+<li><p>paid: We would not know if students paid for extra classes in the subject yet.</p>
+<ul>
+<li><p>Though we may be able to find out if they are WILLING to pay for extra classes.</p></li>
+</ul>
+</li>
+<li><p>activities: We would not know if the student was involved in extracurriculars at this school yet.</p>
+<ul>
+<li><p>Though we may be able to ask students if they INTEND to be involved in activities.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>We <strong>may</strong> want to remove:</p>
+<ul>
+<li><p>absences:</p>
+<ul>
+<li><p>We wouldn’t have absences from the current school, though we likely could get absences from their previous school.</p></li>
+</ul>
+</li>
+<li><p>Dalc: Work day alcohol consumption. Hopefully, the students who have not entered high school yet will not already be consuming alcohol.</p></li>
+<li><p>Walc: weekend alcohol consumption. Hopefully, the students who have not entered high school yet will not already be consuming alcohol.</p></li>
+</ul>
+</li>
+</ul>
+<p>As you can see, some of the features are obviously inappropriate to include, but many of them are a bit more ambiguous.
+- Always think of your stakeholder’s goals/problem statement when deciding what features to include in your model/analysis.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>When in doubt, contact and ask your stakeholder about the choice(s) you are considering!</p></li>
+</ul>
+</div></blockquote>
+<section id="decide-if-using-scaled">
+<h3><code class="docutils literal notranslate"><span class="pre">DECIDE</span> <span class="pre">IF</span> <span class="pre">USING</span> <span class="pre">SCALED</span></code><a class="headerlink" href="#decide-if-using-scaled" title="Permalink to this headline">#</a></h3>
+<section id="unsaled">
+<h4>Unsaled<a class="headerlink" href="#unsaled" title="Permalink to this headline">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## remove cols that MUST be removed.</span>
+
+<span class="n">df_mvp</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span><span class="s1">&#39;G2&#39;</span><span class="p">])</span>
+
+<span class="c1"># ### Train Test Split</span>
+<span class="c1">## Make x and y variables</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df_mvp</span><span class="p">[</span><span class="s1">&#39;G3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df_mvp</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G3&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1">## train-test-split with random state for reproducibility</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
+
+
+
+<span class="c1">## fit column transformer and run get_feature_names_out</span>
+<span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">feature_names</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+
+<span class="n">X_train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+
+<span class="n">X_test_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">X_test_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>school_MS</th>
+      <th>sex_M</th>
+      <th>address_U</th>
+      <th>famsize_LE3</th>
+      <th>Pstatus_T</th>
+      <th>Mjob_at_home</th>
+      <th>Mjob_health</th>
+      <th>Mjob_other</th>
+      <th>Mjob_services</th>
+      <th>Mjob_teacher</th>
+      <th>Fjob_at_home</th>
+      <th>Fjob_health</th>
+      <th>Fjob_other</th>
+      <th>Fjob_services</th>
+      <th>Fjob_teacher</th>
+      <th>reason_course</th>
+      <th>reason_home</th>
+      <th>reason_other</th>
+      <th>reason_reputation</th>
+      <th>guardian_father</th>
+      <th>guardian_mother</th>
+      <th>guardian_other</th>
+      <th>schoolsup_yes</th>
+      <th>famsup_yes</th>
+      <th>paid_yes</th>
+      <th>activities_yes</th>
+      <th>nursery_yes</th>
+      <th>higher_yes</th>
+      <th>internet_yes</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>58</th>
+      <td>15.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>5.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>338</th>
+      <td>18.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>4.00</td>
+      <td>0.00</td>
+      <td>5.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>7.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>17.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>2.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">coeffs_mvp</span> <span class="o">=</span> <span class="n">evaluate_linreg</span><span class="p">(</span><span class="n">lin_reg</span><span class="p">,</span> <span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test_df</span><span class="p">,</span><span class="n">y_test</span><span class="p">)</span>
+<span class="n">coeffs_mvp</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Data  Train  Test  Delta
+R^2    0.30  0.04  -0.26
+RMSE   3.91  4.12   0.21
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -0.34
+Medu                 0.58
+Fedu                -0.06
+traveltime          -0.13
+studytime            0.29
+failures            -1.79
+famrel               0.12
+freetime             0.27
+goout               -0.70
+Dalc                -0.33
+Walc                 0.36
+health              -0.21
+absences             0.05
+school_MS            0.61
+sex_M                1.00
+address_U            0.60
+famsize_LE3          0.29
+Pstatus_T           -0.12
+Mjob_at_home         2.75
+Mjob_health          4.74
+Mjob_other           2.74
+Mjob_services        3.59
+Mjob_teacher         1.42
+Fjob_at_home         3.21
+Fjob_health          3.34
+Fjob_other           2.23
+Fjob_services        2.39
+Fjob_teacher         4.06
+reason_course        2.82
+reason_home          3.60
+reason_other         4.56
+reason_reputation    4.26
+guardian_father      4.43
+guardian_mother      4.88
+guardian_other       5.93
+schoolsup_yes       -1.08
+famsup_yes          -1.07
+paid_yes             0.41
+activities_yes       0.06
+nursery_yes         -0.13
+higher_yes           1.38
+internet_yes         0.76
+romantic_yes        -1.39
+Name: Coefficients, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>As we can see above, NOT including the grade from year 2 dramatically hurts our model’s ability to predict the final grade.</p></li>
+</ul>
+</section>
+<section id="scaled">
+<h4>Scaled<a class="headerlink" href="#scaled" title="Permalink to this headline">#</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fit column transformer and run get_feature_names_out</span>
+<span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">feature_names</span> <span class="o">=</span> <span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+
+<span class="n">X_train_scaled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+
+<span class="n">X_test_scaled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor_scale</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">X_test_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>school_MS</th>
+      <th>sex_M</th>
+      <th>address_U</th>
+      <th>famsize_LE3</th>
+      <th>Pstatus_T</th>
+      <th>Mjob_at_home</th>
+      <th>Mjob_health</th>
+      <th>Mjob_other</th>
+      <th>Mjob_services</th>
+      <th>Mjob_teacher</th>
+      <th>Fjob_at_home</th>
+      <th>Fjob_health</th>
+      <th>Fjob_other</th>
+      <th>Fjob_services</th>
+      <th>Fjob_teacher</th>
+      <th>reason_course</th>
+      <th>reason_home</th>
+      <th>reason_other</th>
+      <th>reason_reputation</th>
+      <th>guardian_father</th>
+      <th>guardian_mother</th>
+      <th>guardian_other</th>
+      <th>schoolsup_yes</th>
+      <th>famsup_yes</th>
+      <th>paid_yes</th>
+      <th>activities_yes</th>
+      <th>nursery_yes</th>
+      <th>higher_yes</th>
+      <th>internet_yes</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>58</th>
+      <td>15.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>5.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>338</th>
+      <td>18.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>4.00</td>
+      <td>0.00</td>
+      <td>5.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>7.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>17.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>2.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">coeffs_mvp_scaled</span> <span class="o">=</span> <span class="n">evaluate_linreg</span><span class="p">(</span><span class="n">lin_reg</span><span class="p">,</span> <span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span>
+                                    <span class="n">X_test_scaled</span><span class="p">,</span><span class="n">y_test</span><span class="p">,</span> 
+                                    <span class="n">coeffs_name</span><span class="o">=</span><span class="s2">&quot;Scaled Coefficients&quot;</span><span class="p">)</span>
+<span class="n">coeffs_mvp_scaled</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Data  Train  Test  Delta
+R^2    0.30  0.04  -0.26
+RMSE   3.91  4.12   0.21
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -0.44
+Medu                 0.63
+Fedu                -0.06
+traveltime          -0.09
+studytime            0.24
+failures            -1.29
+famrel               0.11
+freetime             0.27
+goout               -0.78
+Dalc                -0.29
+Walc                 0.47
+health              -0.30
+absences             0.38
+school_MS            0.61
+sex_M                1.00
+address_U            0.60
+famsize_LE3          0.29
+Pstatus_T           -0.12
+Mjob_at_home         1.65
+Mjob_health          3.64
+Mjob_other           1.64
+Mjob_services        2.49
+Mjob_teacher         0.33
+Fjob_at_home         2.12
+Fjob_health          2.24
+Fjob_other           1.13
+Fjob_services        1.30
+Fjob_teacher         2.97
+reason_course        1.45
+reason_home          2.22
+reason_other         3.19
+reason_reputation    2.89
+guardian_father      2.61
+guardian_mother      3.05
+guardian_other       4.10
+schoolsup_yes       -1.08
+famsup_yes          -1.07
+paid_yes             0.41
+activities_yes       0.06
+nursery_yes         -0.13
+higher_yes           1.38
+internet_yes         0.76
+romantic_yes        -1.39
+Name: Scaled Coefficients, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="final-comparison">
+<h3>Final Comparison<a class="headerlink" href="#final-comparison" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">coeffs_mvp</span><span class="p">,</span> <span class="n">coeffs_mvp_scaled</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">compare</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficients</th>
+      <th>Scaled Coefficients</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>age</th>
+      <td>-0.34</td>
+      <td>-0.44</td>
+    </tr>
+    <tr>
+      <th>Medu</th>
+      <td>0.58</td>
+      <td>0.63</td>
+    </tr>
+    <tr>
+      <th>Fedu</th>
+      <td>-0.06</td>
+      <td>-0.06</td>
+    </tr>
+    <tr>
+      <th>traveltime</th>
+      <td>-0.13</td>
+      <td>-0.09</td>
+    </tr>
+    <tr>
+      <th>studytime</th>
+      <td>0.29</td>
+      <td>0.24</td>
+    </tr>
+    <tr>
+      <th>failures</th>
+      <td>-1.79</td>
+      <td>-1.29</td>
+    </tr>
+    <tr>
+      <th>famrel</th>
+      <td>0.12</td>
+      <td>0.11</td>
+    </tr>
+    <tr>
+      <th>freetime</th>
+      <td>0.27</td>
+      <td>0.27</td>
+    </tr>
+    <tr>
+      <th>goout</th>
+      <td>-0.70</td>
+      <td>-0.78</td>
+    </tr>
+    <tr>
+      <th>Dalc</th>
+      <td>-0.33</td>
+      <td>-0.29</td>
+    </tr>
+    <tr>
+      <th>Walc</th>
+      <td>0.36</td>
+      <td>0.47</td>
+    </tr>
+    <tr>
+      <th>health</th>
+      <td>-0.21</td>
+      <td>-0.30</td>
+    </tr>
+    <tr>
+      <th>absences</th>
+      <td>0.05</td>
+      <td>0.38</td>
+    </tr>
+    <tr>
+      <th>school_MS</th>
+      <td>0.61</td>
+      <td>0.61</td>
+    </tr>
+    <tr>
+      <th>sex_M</th>
+      <td>1.00</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>address_U</th>
+      <td>0.60</td>
+      <td>0.60</td>
+    </tr>
+    <tr>
+      <th>famsize_LE3</th>
+      <td>0.29</td>
+      <td>0.29</td>
+    </tr>
+    <tr>
+      <th>Pstatus_T</th>
+      <td>-0.12</td>
+      <td>-0.12</td>
+    </tr>
+    <tr>
+      <th>Mjob_at_home</th>
+      <td>2.75</td>
+      <td>1.65</td>
+    </tr>
+    <tr>
+      <th>Mjob_health</th>
+      <td>4.74</td>
+      <td>3.64</td>
+    </tr>
+    <tr>
+      <th>Mjob_other</th>
+      <td>2.74</td>
+      <td>1.64</td>
+    </tr>
+    <tr>
+      <th>Mjob_services</th>
+      <td>3.59</td>
+      <td>2.49</td>
+    </tr>
+    <tr>
+      <th>Mjob_teacher</th>
+      <td>1.42</td>
+      <td>0.33</td>
+    </tr>
+    <tr>
+      <th>Fjob_at_home</th>
+      <td>3.21</td>
+      <td>2.12</td>
+    </tr>
+    <tr>
+      <th>Fjob_health</th>
+      <td>3.34</td>
+      <td>2.24</td>
+    </tr>
+    <tr>
+      <th>Fjob_other</th>
+      <td>2.23</td>
+      <td>1.13</td>
+    </tr>
+    <tr>
+      <th>Fjob_services</th>
+      <td>2.39</td>
+      <td>1.30</td>
+    </tr>
+    <tr>
+      <th>Fjob_teacher</th>
+      <td>4.06</td>
+      <td>2.97</td>
+    </tr>
+    <tr>
+      <th>reason_course</th>
+      <td>2.82</td>
+      <td>1.45</td>
+    </tr>
+    <tr>
+      <th>reason_home</th>
+      <td>3.60</td>
+      <td>2.22</td>
+    </tr>
+    <tr>
+      <th>reason_other</th>
+      <td>4.56</td>
+      <td>3.19</td>
+    </tr>
+    <tr>
+      <th>reason_reputation</th>
+      <td>4.26</td>
+      <td>2.89</td>
+    </tr>
+    <tr>
+      <th>guardian_father</th>
+      <td>4.43</td>
+      <td>2.61</td>
+    </tr>
+    <tr>
+      <th>guardian_mother</th>
+      <td>4.88</td>
+      <td>3.05</td>
+    </tr>
+    <tr>
+      <th>guardian_other</th>
+      <td>5.93</td>
+      <td>4.10</td>
+    </tr>
+    <tr>
+      <th>schoolsup_yes</th>
+      <td>-1.08</td>
+      <td>-1.08</td>
+    </tr>
+    <tr>
+      <th>famsup_yes</th>
+      <td>-1.07</td>
+      <td>-1.07</td>
+    </tr>
+    <tr>
+      <th>paid_yes</th>
+      <td>0.41</td>
+      <td>0.41</td>
+    </tr>
+    <tr>
+      <th>activities_yes</th>
+      <td>0.06</td>
+      <td>0.06</td>
+    </tr>
+    <tr>
+      <th>nursery_yes</th>
+      <td>-0.13</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>higher_yes</th>
+      <td>1.38</td>
+      <td>1.38</td>
+    </tr>
+    <tr>
+      <th>internet_yes</th>
+      <td>0.76</td>
+      <td>0.76</td>
+    </tr>
+    <tr>
+      <th>romantic_yes</th>
+      <td>-1.39</td>
+      <td>-1.39</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">compare</span> <span class="o">=</span> <span class="n">compare</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Coefficients&#39;</span><span class="p">)</span>
+<span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Diff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Scaled Coefficients&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Coefficients&#39;</span><span class="p">]</span>
+<span class="n">compare</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Coefficients</th>
+      <th>Scaled Coefficients</th>
+      <th>Diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>failures</th>
+      <td>-1.79</td>
+      <td>-1.29</td>
+      <td>0.50</td>
+    </tr>
+    <tr>
+      <th>romantic_yes</th>
+      <td>-1.39</td>
+      <td>-1.39</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>schoolsup_yes</th>
+      <td>-1.08</td>
+      <td>-1.08</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>famsup_yes</th>
+      <td>-1.07</td>
+      <td>-1.07</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>goout</th>
+      <td>-0.70</td>
+      <td>-0.78</td>
+      <td>-0.09</td>
+    </tr>
+    <tr>
+      <th>age</th>
+      <td>-0.34</td>
+      <td>-0.44</td>
+      <td>-0.10</td>
+    </tr>
+    <tr>
+      <th>Dalc</th>
+      <td>-0.33</td>
+      <td>-0.29</td>
+      <td>0.04</td>
+    </tr>
+    <tr>
+      <th>health</th>
+      <td>-0.21</td>
+      <td>-0.30</td>
+      <td>-0.09</td>
+    </tr>
+    <tr>
+      <th>nursery_yes</th>
+      <td>-0.13</td>
+      <td>-0.13</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>traveltime</th>
+      <td>-0.13</td>
+      <td>-0.09</td>
+      <td>0.03</td>
+    </tr>
+    <tr>
+      <th>Pstatus_T</th>
+      <td>-0.12</td>
+      <td>-0.12</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>Fedu</th>
+      <td>-0.06</td>
+      <td>-0.06</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>absences</th>
+      <td>0.05</td>
+      <td>0.38</td>
+      <td>0.33</td>
+    </tr>
+    <tr>
+      <th>activities_yes</th>
+      <td>0.06</td>
+      <td>0.06</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>famrel</th>
+      <td>0.12</td>
+      <td>0.11</td>
+      <td>-0.01</td>
+    </tr>
+    <tr>
+      <th>freetime</th>
+      <td>0.27</td>
+      <td>0.27</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>famsize_LE3</th>
+      <td>0.29</td>
+      <td>0.29</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>studytime</th>
+      <td>0.29</td>
+      <td>0.24</td>
+      <td>-0.05</td>
+    </tr>
+    <tr>
+      <th>Walc</th>
+      <td>0.36</td>
+      <td>0.47</td>
+      <td>0.11</td>
+    </tr>
+    <tr>
+      <th>paid_yes</th>
+      <td>0.41</td>
+      <td>0.41</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>Medu</th>
+      <td>0.58</td>
+      <td>0.63</td>
+      <td>0.05</td>
+    </tr>
+    <tr>
+      <th>address_U</th>
+      <td>0.60</td>
+      <td>0.60</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>school_MS</th>
+      <td>0.61</td>
+      <td>0.61</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>internet_yes</th>
+      <td>0.76</td>
+      <td>0.76</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>sex_M</th>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>higher_yes</th>
+      <td>1.38</td>
+      <td>1.38</td>
+      <td>-0.00</td>
+    </tr>
+    <tr>
+      <th>Mjob_teacher</th>
+      <td>1.42</td>
+      <td>0.33</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>Fjob_other</th>
+      <td>2.23</td>
+      <td>1.13</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>Fjob_services</th>
+      <td>2.39</td>
+      <td>1.30</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>Mjob_other</th>
+      <td>2.74</td>
+      <td>1.64</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>Mjob_at_home</th>
+      <td>2.75</td>
+      <td>1.65</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>reason_course</th>
+      <td>2.82</td>
+      <td>1.45</td>
+      <td>-1.37</td>
+    </tr>
+    <tr>
+      <th>Fjob_at_home</th>
+      <td>3.21</td>
+      <td>2.12</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>Fjob_health</th>
+      <td>3.34</td>
+      <td>2.24</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>Mjob_services</th>
+      <td>3.59</td>
+      <td>2.49</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>reason_home</th>
+      <td>3.60</td>
+      <td>2.22</td>
+      <td>-1.37</td>
+    </tr>
+    <tr>
+      <th>Fjob_teacher</th>
+      <td>4.06</td>
+      <td>2.97</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>reason_reputation</th>
+      <td>4.26</td>
+      <td>2.89</td>
+      <td>-1.37</td>
+    </tr>
+    <tr>
+      <th>guardian_father</th>
+      <td>4.43</td>
+      <td>2.61</td>
+      <td>-1.83</td>
+    </tr>
+    <tr>
+      <th>reason_other</th>
+      <td>4.56</td>
+      <td>3.19</td>
+      <td>-1.37</td>
+    </tr>
+    <tr>
+      <th>Mjob_health</th>
+      <td>4.74</td>
+      <td>3.64</td>
+      <td>-1.10</td>
+    </tr>
+    <tr>
+      <th>guardian_mother</th>
+      <td>4.88</td>
+      <td>3.05</td>
+      <td>-1.83</td>
+    </tr>
+    <tr>
+      <th>guardian_other</th>
+      <td>5.93</td>
+      <td>4.10</td>
+      <td>-1.83</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span><span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Coefficients&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Raw&quot;</span><span class="p">)</span>
+<span class="n">compare</span><span class="p">[</span><span class="s1">&#39;Scaled Coefficients&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Scaled&#39;</span><span class="p">)</span>
+
+<span class="p">[</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">]</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/02_v2_Analyzing_Coefficients -RENAME_44_0.png" src="../../_images/02_v2_Analyzing_Coefficients -RENAME_44_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ax = coeffs_mvp.sort_values().plot(kind=&#39;barh&#39;,figsize=(6,10))</span>
+<span class="c1"># ax.axvline(0,color=&#39;k&#39;)</span>
+<span class="c1"># ax.set_title(&#39;LinearRegression Coefficients&#39;);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Notice how VERY diferent our coefficients are now that we have removed the  students’ grades from the prior 2 years!</p></li>
+</ul>
+<blockquote>
+<div><p>BOOKMARK:  interpret new coeffs</p>
+</div></blockquote>
+</section>
+</section>
+<section id="selecting-our-final-model-for-extracting-insights">
+<h2>Selecting Our Final Model for Extracting Insights<a class="headerlink" href="#selecting-our-final-model-for-extracting-insights" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li></li>
+</ul>
+<ul class="simple">
+<li><p>Out of all of the variants we have tried, the best one to use going forward is our Ordinal encoded zipcodes with an intercept. (once again, you can make an argument for using the one without an intercept as well).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">coeffs_mvp</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>failures            -1.79
+romantic_yes        -1.39
+schoolsup_yes       -1.08
+famsup_yes          -1.07
+goout               -0.70
+age                 -0.34
+Dalc                -0.33
+health              -0.21
+nursery_yes         -0.13
+traveltime          -0.13
+Pstatus_T           -0.12
+Fedu                -0.06
+absences             0.05
+activities_yes       0.06
+famrel               0.12
+freetime             0.27
+famsize_LE3          0.29
+studytime            0.29
+Walc                 0.36
+paid_yes             0.41
+Medu                 0.58
+address_U            0.60
+school_MS            0.61
+internet_yes         0.76
+sex_M                1.00
+higher_yes           1.38
+Mjob_teacher         1.42
+Fjob_other           2.23
+Fjob_services        2.39
+Mjob_other           2.74
+Mjob_at_home         2.75
+reason_course        2.82
+Fjob_at_home         3.21
+Fjob_health          3.34
+Mjob_services        3.59
+reason_home          3.60
+Fjob_teacher         4.06
+reason_reputation    4.26
+guardian_father      4.43
+reason_other         4.56
+Mjob_health          4.74
+guardian_mother      4.88
+guardian_other       5.93
+Name: Coefficients, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>In the next lesson, we will focus on another type of model-based values.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "dojo-env"
+        },
+        kernelOptions: {
+            kernelName: "dojo-env",
+            path: "./LESSONS/2_Analyzing_Coefficients"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'dojo-env'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Regression Coefficients - Revisited</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../4_Model_Explainers-Regression/4_Model_Explainers-Regression.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Model Explainers - For Regression</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Coding Dojo Data Science<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

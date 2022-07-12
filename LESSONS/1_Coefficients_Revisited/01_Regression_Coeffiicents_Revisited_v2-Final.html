@@ -1,0 +1,3218 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Regression Coefficients - Revisited &#8212; Stack 5: Data Visualization - Model Insights</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Analyzing Coefficients - V2" href="../2_Analyzing_Coefficients/02_v2_Analyzing_Coefficients%20-RENAME.html" />
+    <link rel="prev" title="Insights for Stakeholders" href="../0_insights_for_stakeholders/Insights%20for%20Stakeholders.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/dojo-logo.jpeg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Stack 5: Data Visualization - Model Insights</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to your Jupyter Book
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../0_insights_for_stakeholders/Insights%20for%20Stakeholders.html">
+   Insights for Stakeholders
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Regression Coefficients - Revisited
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../2_Analyzing_Coefficients/02_v2_Analyzing_Coefficients%20-RENAME.html">
+   Analyzing Coefficients - V2
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../4_Model_Explainers-Regression/4_Model_Explainers-Regression.html">
+   Model Explainers - For Regression
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../5_Explaining_Classifications/5_Explaining_Classifications.html">
+   Model Explainers - For Classification
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/coding-dojo-data-science/curriculum-model-insights/main?urlpath=tree/docs/LESSONS/1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/coding-dojo-data-science/curriculum-model-insights"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/LESSONS/1_Coefficients_Revisited/01_Regression_Coeffiicents_Revisited_v2-Final.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Regression Coefficients - Revisited
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lesson-objectives">
+     Lesson Objectives
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#introduction">
+     Introduction
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#confirming-package-versions">
+   Confirming Package Versions
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#extracting-coefficients-from-linearregression-in-scikit-learn">
+   Extracting Coefficients from LinearRegression in scikit-learn
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#highlighted-changes-scikit-learn-v1-1">
+     Highlighted Changes  - scikit-learn v1.1
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#new-and-improved-columntransformer">
+     New and Improved
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ColumnTransformer
+      </span>
+     </code>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#selecting-our-features">
+       Selecting Our Features
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#train-test-split">
+       Train Test Split
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#preprocessing-columntransformer">
+       Preprocessing + ColumnTransformer
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#remaking-our-x-train-and-x-test-as-dataframes">
+       Remaking Our X_train and X_test as DataFrames
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#extracting-coefficients-and-intercept-from-scikit-learn-linear-regression">
+     Extracting Coefficients and Intercept from Scikit-Learn Linear Regression
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#saving-the-coefficients-as-a-pandas-series">
+       Saving the coefficients as a pandas Series
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#displaying-the-coefficients">
+       Displaying the Coefficients
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#suppressing-scientific-notation-in-pandas">
+       Suppressing Scientific Notation in Pandas
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#inspecting-our-coefficients-sanity-check">
+     Inspecting Our Coefficients - Sanity Check
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#using-onehotencoder-with-binary-categorical-features">
+       Using OneHotEncoder with binary categorical features.
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#recreating-our-x-y-data-with-drop-if-binary">
+     Recreating Our X/y data with
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       drop='if_binary'
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#refitting-a-linearregression">
+     Refitting a LinearRegression
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visualizing-coefficients">
+       VIsualizing Coefficients
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#reminder-interpreting-coefficients">
+       Reminder: Interpreting Coefficients
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#interpreting-our-model-s-coefficients">
+         Interpreting Our Model’s Coefficients
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#debating-whether-to-include-final-story-telling-summary-or-not">
+         <code class="docutils literal notranslate">
+          <span class="pre">
+           &lt;DEBATING
+          </span>
+          <span class="pre">
+           WHETHER
+          </span>
+          <span class="pre">
+           TO
+          </span>
+          <span class="pre">
+           INCLUDE
+          </span>
+          <span class="pre">
+           FINAL
+          </span>
+          <span class="pre">
+           STORY-TELLING
+          </span>
+          <span class="pre">
+           SUMMARY
+          </span>
+          <span class="pre">
+           OR
+          </span>
+          <span class="pre">
+           NOT&gt;
+          </span>
+         </code>
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#next-steps">
+       Next Steps
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#summary">
+     Summary
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#recap-sklearn-v1-1">
+       Recap - Sklearn v1.1
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#recap-pandas-options">
+       Recap - Pandas Options
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Regression Coefficients - Revisited</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Regression Coefficients - Revisited
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lesson-objectives">
+     Lesson Objectives
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#introduction">
+     Introduction
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#confirming-package-versions">
+   Confirming Package Versions
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#extracting-coefficients-from-linearregression-in-scikit-learn">
+   Extracting Coefficients from LinearRegression in scikit-learn
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#highlighted-changes-scikit-learn-v1-1">
+     Highlighted Changes  - scikit-learn v1.1
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#new-and-improved-columntransformer">
+     New and Improved
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ColumnTransformer
+      </span>
+     </code>
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#selecting-our-features">
+       Selecting Our Features
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#train-test-split">
+       Train Test Split
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#preprocessing-columntransformer">
+       Preprocessing + ColumnTransformer
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#remaking-our-x-train-and-x-test-as-dataframes">
+       Remaking Our X_train and X_test as DataFrames
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#extracting-coefficients-and-intercept-from-scikit-learn-linear-regression">
+     Extracting Coefficients and Intercept from Scikit-Learn Linear Regression
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#saving-the-coefficients-as-a-pandas-series">
+       Saving the coefficients as a pandas Series
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#displaying-the-coefficients">
+       Displaying the Coefficients
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#suppressing-scientific-notation-in-pandas">
+       Suppressing Scientific Notation in Pandas
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#inspecting-our-coefficients-sanity-check">
+     Inspecting Our Coefficients - Sanity Check
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#using-onehotencoder-with-binary-categorical-features">
+       Using OneHotEncoder with binary categorical features.
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#recreating-our-x-y-data-with-drop-if-binary">
+     Recreating Our X/y data with
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       drop='if_binary'
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#refitting-a-linearregression">
+     Refitting a LinearRegression
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visualizing-coefficients">
+       VIsualizing Coefficients
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#reminder-interpreting-coefficients">
+       Reminder: Interpreting Coefficients
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#interpreting-our-model-s-coefficients">
+         Interpreting Our Model’s Coefficients
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#debating-whether-to-include-final-story-telling-summary-or-not">
+         <code class="docutils literal notranslate">
+          <span class="pre">
+           &lt;DEBATING
+          </span>
+          <span class="pre">
+           WHETHER
+          </span>
+          <span class="pre">
+           TO
+          </span>
+          <span class="pre">
+           INCLUDE
+          </span>
+          <span class="pre">
+           FINAL
+          </span>
+          <span class="pre">
+           STORY-TELLING
+          </span>
+          <span class="pre">
+           SUMMARY
+          </span>
+          <span class="pre">
+           OR
+          </span>
+          <span class="pre">
+           NOT&gt;
+          </span>
+         </code>
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#next-steps">
+       Next Steps
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#summary">
+     Summary
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#recap-sklearn-v1-1">
+       Recap - Sklearn v1.1
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#recap-pandas-options">
+       Recap - Pandas Options
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="regression-coefficients-revisited">
+<h1>Regression Coefficients - Revisited<a class="headerlink" href="#regression-coefficients-revisited" title="Permalink to this headline">#</a></h1>
+<section id="lesson-objectives">
+<h2>Lesson Objectives<a class="headerlink" href="#lesson-objectives" title="Permalink to this headline">#</a></h2>
+<p>By the end of this lesson, students will be able to:</p>
+<ul class="simple">
+<li><p>Use scikit-learn v1.1’s simplified toolkit.</p></li>
+<li><p>Extract and visualize coefficients from sklearn regression model.</p></li>
+<li><p>Control panda’s display options to facilitate interpretation.</p></li>
+</ul>
+</section>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>At the end of last stack, we dove deep into linear regression models and their assumptions. We introduced a new package called statsmodels, which produced a Linear Regression model using “Ordinary-Least-Squared (OLS)”.</p></li>
+<li><p>The model included a robust statistical summary that was incredibly informative as we critically diagnosed our regression model and if we met the assumptions of linear regression.</p></li>
+<li><p>This stack, we will be focusing on extracting insights from our models: both by examining parameters/aspects of the model itself, like the coefficients it calculated, but also by applying some additional tools and packages specifically designed to explain models.</p></li>
+<li><p>Most of these tools are compatible with the scikit-learn ecosystem but are not yet available for statsmodels.</p></li>
+</ul>
+<p>Since we are not focusing on regression diagnostics this week, we will shift back to using scikit-learn models. Scikit-learn recently released version 1.1.1, which added several helpful tools that will simplify our workflow.</p>
+<p>Let’s review some of these key updates as we rebuild our housing regression model from week 16.</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="confirming-package-versions">
+<h1>Confirming Package Versions<a class="headerlink" href="#confirming-package-versions" title="Permalink to this headline">#</a></h1>
+<ul class="simple">
+<li><p>All packages have a version number that indicates which iteration of the package is currently being used.</p>
+<ul>
+<li><p>If you import an entire package, you can use the special method <code class="docutils literal notranslate"><span class="pre">package.__version__</span></code> (replace package with the name of the package you want to check).</p></li>
+</ul>
+</li>
+<li><p>The reason this is important is that as of the writing of this stack, Google Colab is still using a version of python that is too old to support the newest scikit-learn.</p>
+<ul>
+<li><p>You can check which version of python you are using by running the following command in a jupyter notebook:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">!python</span> <span class="pre">--version</span></code></p></li>
+<li><p>Note: if you remove the <code class="docutils literal notranslate"><span class="pre">!</span></code>, you can run this command in your terminal.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>If you run the following code on Google Colab and on your local computer, you can compare the version numbers.</p></li>
+</ul>
+<img src="colab_versions.png" width=400px>
+<ul class="simple">
+<li><p>Now, run the following block of code in a jupyter notebook on your local machine to confirm that you have Python 3.8.13 and sklearn v1.1.1.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the following command on your local computer to </span>
+<span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sklearn version: </span><span class="si">{</span><span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="o">!</span>python --version
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sklearn version: 1.1.1
+Python 3.8.13
+</pre></div>
+</div>
+</div>
+</div>
+<blockquote>
+<div><ul class="simple">
+<li><p>If you have a Python 3.7 or an earlier version of scikit-learn, please revisit the “<code class="docutils literal notranslate"><span class="pre">&lt;Insert</span> <span class="pre">the</span> <span class="pre">name</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">&quot;week&quot;</span> <span class="pre">of</span> <span class="pre">content</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">LP</span> <span class="pre">for</span> <span class="pre">installation&gt;</span></code>”.
+- See the “<code class="docutils literal notranslate"><span class="pre">Updating</span> <span class="pre">Your</span> <span class="pre">Dojo-Env</span> <span class="pre">Lesson</span></code> [Note to Brenda: does not exist yet - see 1:1 doc for question on handling multiple envs] for how to remove your current dojo-env and replace it with the new one.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="extracting-coefficients-from-linearregression-in-scikit-learn">
+<h1>Extracting Coefficients from LinearRegression in scikit-learn<a class="headerlink" href="#extracting-coefficients-from-linearregression-in-scikit-learn" title="Permalink to this headline">#</a></h1>
+<section id="highlighted-changes-scikit-learn-v1-1">
+<h2>Highlighted Changes  - scikit-learn v1.1<a class="headerlink" href="#highlighted-changes-scikit-learn-v1-1" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>The single biggest change in the updated sklearn is a fully-functional <code class="docutils literal notranslate"><span class="pre">.get_feature_names_out()</span></code> method in the <code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code>.</p>
+<ul>
+<li><p>This will make it MUCH easier for us to extract our transformed data as dataframes and to match up the feature names to our models’ coefficients.</p></li>
+</ul>
+</li>
+<li><p>There are some additional updates that are not pertinent to this stack, but if you are curious, you can find the <a class="reference external" href="https://scikit-learn.org/stable/auto_examples/release_highlights/plot_release_highlights_1_1_0.html">details on the new release here</a>.</p></li>
+</ul>
+</section>
+<section id="new-and-improved-columntransformer">
+<h2>New and Improved <code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code><a class="headerlink" href="#new-and-improved-columntransformer" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="c1">## Customization Options</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">([</span><span class="s1">&#39;fivethirtyeight&#39;</span><span class="p">,</span><span class="s1">&#39;seaborn-talk&#39;</span><span class="p">])</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.facecolor&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;white&#39;</span>
+
+<span class="c1">## additional required imports</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span><span class="p">,</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">make_column_transformer</span><span class="p">,</span> <span class="n">make_column_selector</span><span class="p">,</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">make_pipeline</span><span class="p">,</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+
+<span class="c1"># set random seed</span>
+<span class="n">SEED</span> <span class="o">=</span> <span class="mi">321</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+
+<span class="c1">## set text displays for sklearn</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">set_config</span>
+<span class="n">set_config</span><span class="p">(</span><span class="n">display</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Load in the student performance - math dataset &amp; display the head and info</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vS6xDKNpWkBBdhZSqepy48bXo55QnRv1Xy6tXTKYzZLMPjZozMfYhHQjAcC8uj9hQ/pub?output=xlsx&quot;</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">sheet_name</span><span class="o">=</span><span class="s1">&#39;student-mat&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 395 entries, 0 to 394
+Data columns (total 33 columns):
+ #   Column      Non-Null Count  Dtype  
+---  ------      --------------  -----  
+ 0   school      395 non-null    object 
+ 1   sex         395 non-null    object 
+ 2   age         395 non-null    float64
+ 3   address     395 non-null    object 
+ 4   famsize     395 non-null    object 
+ 5   Pstatus     395 non-null    object 
+ 6   Medu        395 non-null    float64
+ 7   Fedu        395 non-null    float64
+ 8   Mjob        395 non-null    object 
+ 9   Fjob        395 non-null    object 
+ 10  reason      395 non-null    object 
+ 11  guardian    395 non-null    object 
+ 12  traveltime  395 non-null    float64
+ 13  studytime   395 non-null    float64
+ 14  failures    395 non-null    float64
+ 15  schoolsup   395 non-null    object 
+ 16  famsup      395 non-null    object 
+ 17  paid        395 non-null    object 
+ 18  activities  395 non-null    object 
+ 19  nursery     395 non-null    object 
+ 20  higher      395 non-null    object 
+ 21  internet    395 non-null    object 
+ 22  romantic    395 non-null    object 
+ 23  famrel      395 non-null    float64
+ 24  freetime    395 non-null    float64
+ 25  goout       395 non-null    float64
+ 26  Dalc        395 non-null    float64
+ 27  Walc        395 non-null    float64
+ 28  health      395 non-null    float64
+ 29  absences    395 non-null    float64
+ 30  G1          395 non-null    float64
+ 31  G2          395 non-null    float64
+ 32  G3          395 non-null    float64
+dtypes: float64(16), object(17)
+memory usage: 102.0+ KB
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>school</th>
+      <th>sex</th>
+      <th>age</th>
+      <th>address</th>
+      <th>famsize</th>
+      <th>Pstatus</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>Mjob</th>
+      <th>Fjob</th>
+      <th>...</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>G3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>18.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>A</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>at_home</td>
+      <td>teacher</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>other</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>other</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>10.0</td>
+      <td>7.0</td>
+      <td>8.0</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>health</td>
+      <td>services</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>15.0</td>
+      <td>14.0</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>16.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>other</td>
+      <td>other</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>10.0</td>
+      <td>10.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 33 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>school         2
+sex            2
+age            8
+address        2
+famsize        2
+Pstatus        2
+Medu           5
+Fedu           5
+Mjob           5
+Fjob           5
+reason         4
+guardian       3
+traveltime     4
+studytime      4
+failures       4
+schoolsup      2
+famsup         2
+paid           2
+activities     2
+nursery        2
+higher         2
+internet       2
+romantic       2
+famrel         5
+freetime       5
+goout          5
+Dalc           5
+Walc           5
+health         5
+absences      34
+G1            17
+G2            17
+G3            18
+dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<section id="selecting-our-features">
+<h3>Selecting Our Features<a class="headerlink" href="#selecting-our-features" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>If we wanted to make recommendations to the school district on how to identify and help students that will perform poorly by year 3, we should think about what features make the most sense to include.</p></li>
+<li><p>There are ~2 different approaches  we could take to what to include, depending on what use case we are addressing for our stakeholder.</p></li>
+</ul>
+<p>For example, if our primary goal is to just identify 3rd year students that will perform poorly, then including all of these features would make sense.</p>
+<p>However, if our primary goal is to identify which INCOMING students will perform poorly by their 3rd year, then we would NOT include G1 or G2, since the school will not have those grades for bran new incoming students.</p>
+<ul class="simple">
+<li><p>We will start our analysis addressing the first use case, identify rising 3rd year students that will perform poorly.</p></li>
+</ul>
+</section>
+<section id="train-test-split">
+<h3>Train Test Split<a class="headerlink" href="#train-test-split" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Make x and y variables</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;G3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G3&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1">## train-test-split with random state for reproducibility</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span><span class="p">)</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>school</th>
+      <th>sex</th>
+      <th>age</th>
+      <th>address</th>
+      <th>famsize</th>
+      <th>Pstatus</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>Mjob</th>
+      <th>Fjob</th>
+      <th>...</th>
+      <th>romantic</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>215</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>other</td>
+      <td>other</td>
+      <td>...</td>
+      <td>no</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>14.0</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>GP</td>
+      <td>M</td>
+      <td>15.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>teacher</td>
+      <td>other</td>
+      <td>...</td>
+      <td>no</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>15.0</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>303</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>17.0</td>
+      <td>U</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>health</td>
+      <td>health</td>
+      <td>...</td>
+      <td>no</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>0.0</td>
+      <td>17.0</td>
+      <td>17.0</td>
+    </tr>
+    <tr>
+      <th>160</th>
+      <td>GP</td>
+      <td>M</td>
+      <td>17.0</td>
+      <td>R</td>
+      <td>LE3</td>
+      <td>T</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>at_home</td>
+      <td>other</td>
+      <td>...</td>
+      <td>yes</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>GP</td>
+      <td>F</td>
+      <td>16.0</td>
+      <td>R</td>
+      <td>GT3</td>
+      <td>T</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>health</td>
+      <td>teacher</td>
+      <td>...</td>
+      <td>no</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>10.0</td>
+      <td>11.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 32 columns</p>
+</div></div></div>
+</div>
+</section>
+<section id="preprocessing-columntransformer">
+<h3>Preprocessing + ColumnTransformer<a class="headerlink" href="#preprocessing-columntransformer" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## make categorical selector and verifying it works </span>
+<span class="n">cat_sel</span> <span class="o">=</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+<span class="n">cat_sel</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;school&#39;,
+ &#39;sex&#39;,
+ &#39;address&#39;,
+ &#39;famsize&#39;,
+ &#39;Pstatus&#39;,
+ &#39;Mjob&#39;,
+ &#39;Fjob&#39;,
+ &#39;reason&#39;,
+ &#39;guardian&#39;,
+ &#39;schoolsup&#39;,
+ &#39;famsup&#39;,
+ &#39;paid&#39;,
+ &#39;activities&#39;,
+ &#39;nursery&#39;,
+ &#39;higher&#39;,
+ &#39;internet&#39;,
+ &#39;romantic&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## make numeric selector and verifying it works </span>
+<span class="n">num_sel</span> <span class="o">=</span> <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+<span class="n">num_sel</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;age&#39;,
+ &#39;Medu&#39;,
+ &#39;Fedu&#39;,
+ &#39;traveltime&#39;,
+ &#39;studytime&#39;,
+ &#39;failures&#39;,
+ &#39;famrel&#39;,
+ &#39;freetime&#39;,
+ &#39;goout&#39;,
+ &#39;Dalc&#39;,
+ &#39;Walc&#39;,
+ &#39;health&#39;,
+ &#39;absences&#39;,
+ &#39;G1&#39;,
+ &#39;G2&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## make pipelines for categorical vs numeric data</span>
+<span class="n">cat_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span>
+                                       <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;MISSING&#39;</span><span class="p">),</span>
+                         <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">num_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<blockquote>
+<div><p>Nothing we have done yet should be new code. The changes we will make will be when we create our ColumnTransformer with <code class="docutils literal notranslate"><span class="pre">make_column_transformer</span></code>.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>From now on, you should add <code class="docutils literal notranslate"><span class="pre">verbose_feature_names_out=False</span></code> to <code class="docutils literal notranslate"><span class="pre">make_column_transformer</span></code></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## make the preprocessing column transformer</span>
+<span class="n">preprocessor</span> <span class="o">=</span> <span class="n">make_column_transformer</span><span class="p">((</span><span class="n">num_pipe</span><span class="p">,</span> <span class="n">num_sel</span><span class="p">),</span>
+                                       <span class="p">(</span><span class="n">cat_pipe</span><span class="p">,</span><span class="n">cat_sel</span><span class="p">),</span>
+                                      <span class="n">verbose_feature_names_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">preprocessor</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ColumnTransformer(transformers=[(&#39;pipeline-1&#39;,
+                                 Pipeline(steps=[(&#39;simpleimputer&#39;,
+                                                  SimpleImputer())]),
+                                 &lt;sklearn.compose._column_transformer.make_column_selector object at 0x15c8e12e0&gt;),
+                                (&#39;pipeline-2&#39;,
+                                 Pipeline(steps=[(&#39;simpleimputer&#39;,
+                                                  SimpleImputer(fill_value=&#39;MISSING&#39;,
+                                                                strategy=&#39;constant&#39;)),
+                                                 (&#39;onehotencoder&#39;,
+                                                  OneHotEncoder(handle_unknown=&#39;ignore&#39;,
+                                                                sparse=False))]),
+                                 &lt;sklearn.compose._column_transformer.make_column_selector object at 0x169d73d30&gt;)],
+                  verbose_feature_names_out=False)
+</pre></div>
+</div>
+</div>
+</div>
+<blockquote>
+<div><ul class="simple">
+<li><p>In order to extract the feature names from the preprocessor, we first have to fit it on the data.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Next, we can use the <code class="docutils literal notranslate"><span class="pre">preprocessor.get_feature_names_out()</span></code> method and save the output as something like “feature_names” or “final_features”.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fit column transformer and run get_feature_names_out</span>
+<span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">feature_names</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+<span class="n">feature_names</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;age&#39;, &#39;Medu&#39;, &#39;Fedu&#39;, &#39;traveltime&#39;, &#39;studytime&#39;, &#39;failures&#39;,
+       &#39;famrel&#39;, &#39;freetime&#39;, &#39;goout&#39;, &#39;Dalc&#39;, &#39;Walc&#39;, &#39;health&#39;,
+       &#39;absences&#39;, &#39;G1&#39;, &#39;G2&#39;, &#39;school_GP&#39;, &#39;school_MS&#39;, &#39;sex_F&#39;, &#39;sex_M&#39;,
+       &#39;address_R&#39;, &#39;address_U&#39;, &#39;famsize_GT3&#39;, &#39;famsize_LE3&#39;,
+       &#39;Pstatus_A&#39;, &#39;Pstatus_T&#39;, &#39;Mjob_at_home&#39;, &#39;Mjob_health&#39;,
+       &#39;Mjob_other&#39;, &#39;Mjob_services&#39;, &#39;Mjob_teacher&#39;, &#39;Fjob_at_home&#39;,
+       &#39;Fjob_health&#39;, &#39;Fjob_other&#39;, &#39;Fjob_services&#39;, &#39;Fjob_teacher&#39;,
+       &#39;reason_course&#39;, &#39;reason_home&#39;, &#39;reason_other&#39;,
+       &#39;reason_reputation&#39;, &#39;guardian_father&#39;, &#39;guardian_mother&#39;,
+       &#39;guardian_other&#39;, &#39;schoolsup_no&#39;, &#39;schoolsup_yes&#39;, &#39;famsup_no&#39;,
+       &#39;famsup_yes&#39;, &#39;paid_no&#39;, &#39;paid_yes&#39;, &#39;activities_no&#39;,
+       &#39;activities_yes&#39;, &#39;nursery_no&#39;, &#39;nursery_yes&#39;, &#39;higher_no&#39;,
+       &#39;higher_yes&#39;, &#39;internet_no&#39;, &#39;internet_yes&#39;, &#39;romantic_no&#39;,
+       &#39;romantic_yes&#39;], dtype=object)
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Notice how we were able to get the complete list of feature names, including the One Hot Encoded features with their proper “zipcode” prefix.</p></li>
+<li><p>Quick note: if you forgot to add <code class="docutils literal notranslate"><span class="pre">verbose_feature_names_out</span></code> when you made your preprocessor, you would get something like this:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## make the preprocessing column transformer</span>
+<span class="n">preprocessor_oops</span> <span class="o">=</span> <span class="n">make_column_transformer</span><span class="p">((</span><span class="n">num_pipe</span><span class="p">,</span> <span class="n">num_sel</span><span class="p">),</span>
+                                       <span class="p">(</span><span class="n">cat_pipe</span><span class="p">,</span><span class="n">cat_sel</span><span class="p">)</span>
+                                           <span class="p">)</span> <span class="c1"># forgot verbose_feature_names_out=False</span>
+<span class="c1">## fit column transformer and run get_feature_names_out</span>
+<span class="n">preprocessor_oops</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">feature_names_oops</span> <span class="o">=</span> <span class="n">preprocessor_oops</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+<span class="n">feature_names_oops</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;pipeline-1__age&#39;, &#39;pipeline-1__Medu&#39;, &#39;pipeline-1__Fedu&#39;,
+       &#39;pipeline-1__traveltime&#39;, &#39;pipeline-1__studytime&#39;,
+       &#39;pipeline-1__failures&#39;, &#39;pipeline-1__famrel&#39;,
+       &#39;pipeline-1__freetime&#39;, &#39;pipeline-1__goout&#39;, &#39;pipeline-1__Dalc&#39;,
+       &#39;pipeline-1__Walc&#39;, &#39;pipeline-1__health&#39;, &#39;pipeline-1__absences&#39;,
+       &#39;pipeline-1__G1&#39;, &#39;pipeline-1__G2&#39;, &#39;pipeline-2__school_GP&#39;,
+       &#39;pipeline-2__school_MS&#39;, &#39;pipeline-2__sex_F&#39;, &#39;pipeline-2__sex_M&#39;,
+       &#39;pipeline-2__address_R&#39;, &#39;pipeline-2__address_U&#39;,
+       &#39;pipeline-2__famsize_GT3&#39;, &#39;pipeline-2__famsize_LE3&#39;,
+       &#39;pipeline-2__Pstatus_A&#39;, &#39;pipeline-2__Pstatus_T&#39;,
+       &#39;pipeline-2__Mjob_at_home&#39;, &#39;pipeline-2__Mjob_health&#39;,
+       &#39;pipeline-2__Mjob_other&#39;, &#39;pipeline-2__Mjob_services&#39;,
+       &#39;pipeline-2__Mjob_teacher&#39;, &#39;pipeline-2__Fjob_at_home&#39;,
+       &#39;pipeline-2__Fjob_health&#39;, &#39;pipeline-2__Fjob_other&#39;,
+       &#39;pipeline-2__Fjob_services&#39;, &#39;pipeline-2__Fjob_teacher&#39;,
+       &#39;pipeline-2__reason_course&#39;, &#39;pipeline-2__reason_home&#39;,
+       &#39;pipeline-2__reason_other&#39;, &#39;pipeline-2__reason_reputation&#39;,
+       &#39;pipeline-2__guardian_father&#39;, &#39;pipeline-2__guardian_mother&#39;,
+       &#39;pipeline-2__guardian_other&#39;, &#39;pipeline-2__schoolsup_no&#39;,
+       &#39;pipeline-2__schoolsup_yes&#39;, &#39;pipeline-2__famsup_no&#39;,
+       &#39;pipeline-2__famsup_yes&#39;, &#39;pipeline-2__paid_no&#39;,
+       &#39;pipeline-2__paid_yes&#39;, &#39;pipeline-2__activities_no&#39;,
+       &#39;pipeline-2__activities_yes&#39;, &#39;pipeline-2__nursery_no&#39;,
+       &#39;pipeline-2__nursery_yes&#39;, &#39;pipeline-2__higher_no&#39;,
+       &#39;pipeline-2__higher_yes&#39;, &#39;pipeline-2__internet_no&#39;,
+       &#39;pipeline-2__internet_yes&#39;, &#39;pipeline-2__romantic_no&#39;,
+       &#39;pipeline-2__romantic_yes&#39;], dtype=object)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="remaking-our-x-train-and-x-test-as-dataframes">
+<h3>Remaking Our X_train and X_test as DataFrames<a class="headerlink" href="#remaking-our-x-train-and-x-test-as-dataframes" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Now that we have our list of feature names, we can very easily transform out X_train and X_test into preprocessed dataframes.</p></li>
+<li><p>We can immediately turn the output of our preprocessor into a dataframe and do not need to save it as a separate variable first.</p>
+<ul>
+<li><p>Therefore, in our pd.DataFrame, we will provide the <code class="docutils literal notranslate"><span class="pre">preprocessor.transform(X_train)</span></code> as the first argument, followed by <code class="docutils literal notranslate"><span class="pre">columns=feature_names</span></code> (the list we extracted from our precprocessor)</p></li>
+<li><p>Pro Tip: you can also use the same index as your X_train or X_test variable, if you want to match up one of the transformed rows with the original dataframe.</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">X_train_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>...</th>
+      <th>activities_no</th>
+      <th>activities_yes</th>
+      <th>nursery_no</th>
+      <th>nursery_yes</th>
+      <th>higher_no</th>
+      <th>higher_yes</th>
+      <th>internet_no</th>
+      <th>internet_yes</th>
+      <th>romantic_no</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>215</th>
+      <td>17.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>15.0</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>303</th>
+      <td>17.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 58 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_test_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">X_test_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>...</th>
+      <th>activities_no</th>
+      <th>activities_yes</th>
+      <th>nursery_no</th>
+      <th>nursery_yes</th>
+      <th>higher_no</th>
+      <th>higher_yes</th>
+      <th>internet_no</th>
+      <th>internet_yes</th>
+      <th>romantic_no</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>58</th>
+      <td>15.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>338</th>
+      <td>18.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>17.0</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 58 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## confirm the first 3 rows index in y_test matches X_test_df</span>
+<span class="n">y_test</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>58      9.0
+338    17.0
+291    15.0
+Name: G3, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Notice that we cannot see all of our features after OneHotEncoding. Pandas truncates the display in the middle and displays <code class="docutils literal notranslate"><span class="pre">...</span></code> instead.</p></li>
+<li><p>We can get around this by changing the settings in Pandas using <code class="docutils literal notranslate"><span class="pre">pd.set_option</span></code></p>
+<ul>
+<li><p>In this case, we want to change the <code class="docutils literal notranslate"><span class="pre">max_columns</span></code> to be a number larger than our number of final features. Since we have 87 features, setting the <code class="docutils literal notranslate"><span class="pre">max_columns</span></code> to 100 would be sufficient.</p></li>
+</ul>
+</li>
+<li><p>For more information on pandas options, see their <a class="reference external" href="https://pandas.pydata.org/docs/user_guide/options.html">documentation on Options and Settings</a></p></li>
+<li><p>Final note: in your project notebooks, you should add this function to the top of your notebook right after your imports.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Using pd.set_option to display more columns</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">X_train_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>school_GP</th>
+      <th>school_MS</th>
+      <th>sex_F</th>
+      <th>sex_M</th>
+      <th>address_R</th>
+      <th>address_U</th>
+      <th>famsize_GT3</th>
+      <th>famsize_LE3</th>
+      <th>Pstatus_A</th>
+      <th>Pstatus_T</th>
+      <th>Mjob_at_home</th>
+      <th>Mjob_health</th>
+      <th>Mjob_other</th>
+      <th>Mjob_services</th>
+      <th>Mjob_teacher</th>
+      <th>Fjob_at_home</th>
+      <th>Fjob_health</th>
+      <th>Fjob_other</th>
+      <th>Fjob_services</th>
+      <th>Fjob_teacher</th>
+      <th>reason_course</th>
+      <th>reason_home</th>
+      <th>reason_other</th>
+      <th>reason_reputation</th>
+      <th>guardian_father</th>
+      <th>guardian_mother</th>
+      <th>guardian_other</th>
+      <th>schoolsup_no</th>
+      <th>schoolsup_yes</th>
+      <th>famsup_no</th>
+      <th>famsup_yes</th>
+      <th>paid_no</th>
+      <th>paid_yes</th>
+      <th>activities_no</th>
+      <th>activities_yes</th>
+      <th>nursery_no</th>
+      <th>nursery_yes</th>
+      <th>higher_no</th>
+      <th>higher_yes</th>
+      <th>internet_no</th>
+      <th>internet_yes</th>
+      <th>romantic_no</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>215</th>
+      <td>17.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>14.0</td>
+      <td>15.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>15.0</td>
+      <td>4.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>15.0</td>
+      <td>15.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>303</th>
+      <td>17.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>0.0</td>
+      <td>17.0</td>
+      <td>17.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+<section id="extracting-coefficients-and-intercept-from-scikit-learn-linear-regression">
+<h2>Extracting Coefficients and Intercept from Scikit-Learn Linear Regression<a class="headerlink" href="#extracting-coefficients-and-intercept-from-scikit-learn-linear-regression" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Training R^2: </span><span class="si">{</span><span class="n">lin_reg</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Test R^2: </span><span class="si">{</span><span class="n">lin_reg</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test_df</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training R^2: 0.848
+Test R^2: 0.807
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">r2_score</span><span class="p">,</span> <span class="n">mean_absolute_error</span><span class="p">,</span> <span class="n">mean_squared_error</span>
+<span class="k">def</span> <span class="nf">evaluate_linreg</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span><span class="n">y_test</span><span class="p">,</span> <span class="n">return_df</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">y_hat_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">r2_train</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_hat_train</span><span class="p">)</span>
+    <span class="n">rmse_train</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_hat_train</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;Data&#39;</span><span class="p">:</span><span class="s1">&#39;Train&#39;</span><span class="p">,</span> <span class="s1">&#39;R^2&#39;</span><span class="p">:</span><span class="n">r2_train</span><span class="p">,</span> <span class="s2">&quot;RMSE&quot;</span><span class="p">:</span> <span class="n">rmse_train</span><span class="p">})</span>
+    
+    <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">r2_test</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_hat_test</span><span class="p">)</span>
+    <span class="n">rmse_test</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_hat_test</span><span class="p">,</span> <span class="n">squared</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;Data&#39;</span><span class="p">:</span><span class="s1">&#39;Test&#39;</span><span class="p">,</span> <span class="s1">&#39;R^2&#39;</span><span class="p">:</span><span class="n">r2_test</span><span class="p">,</span> <span class="s2">&quot;RMSE&quot;</span><span class="p">:</span> <span class="n">rmse_test</span><span class="p">})</span>
+    
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+    <span class="n">results_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Test&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">results_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">]</span>
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">T</span>
+    
+    <span class="k">if</span> <span class="n">return_df</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">results_df</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">evaluate_linreg</span><span class="p">(</span><span class="n">lin_reg</span><span class="p">,</span> <span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test_df</span><span class="p">,</span><span class="n">y_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Data  Train   Test  Delta
+R^2   0.848  0.807 -0.041
+RMSE  1.830  1.848  0.018
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>For scikit-learn Linear Regressions, we can find the coefficients for the features that were included in our X-data under the <code class="docutils literal notranslate"><span class="pre">.coef_</span></code> attribute.</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">.coef_</span></code> is a numpy matrix that should have the same number of values as the # of columns in X_train_df</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lin_reg</span><span class="o">.</span><span class="n">coef_</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([-2.20466758e-01,  2.91333976e-01, -1.77473599e-01,  1.87333785e-01,
+       -2.15619658e-01, -1.00533554e-01,  3.09222203e-01,  1.89125262e-02,
+       -1.52832343e-02, -2.12300255e-01,  2.60933091e-01,  2.48701789e-02,
+        5.32226669e-02,  1.40936178e-01,  9.91331303e-01, -1.26407646e+12,
+       -1.26407646e+12,  5.40388537e+11,  5.40388537e+11, -1.18047850e+11,
+       -1.18047850e+11,  3.46283602e+11,  3.46283602e+11, -5.19732724e+11,
+       -5.19732724e+11, -5.53239828e+11, -5.53239828e+11, -5.53239828e+11,
+       -5.53239828e+11, -5.53239828e+11,  2.08905427e+11,  2.08905427e+11,
+        2.08905427e+11,  2.08905427e+11,  2.08905427e+11, -1.26006863e+11,
+       -1.26006863e+11, -1.26006863e+11, -1.26006863e+11,  4.11586427e+11,
+        4.11586427e+11,  4.11586427e+11, -3.64876692e+11, -3.64876692e+11,
+       -5.31822663e+11, -5.31822663e+11, -1.89883820e+11, -1.89883820e+11,
+       -1.85190300e+11, -1.85190300e+11,  3.62281762e+11,  3.62281762e+11,
+        2.51568399e+11,  2.51568399e+11,  5.00489194e+11,  5.00489194e+11,
+       -1.01464598e+12, -1.01464598e+12])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Checking the number of coeffs matches the # of feature names</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lin_reg</span><span class="o">.</span><span class="n">coef_</span><span class="p">))</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>58
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>58
+</pre></div>
+</div>
+</div>
+</div>
+<blockquote>
+<div><p>Note: if for some reason the length of your coef_ is 1, you should add the <code class="docutils literal notranslate"><span class="pre">.flatten()</span></code> method to convert the  coef_ into a simple 1-D array.</p>
+</div></blockquote>
+<section id="saving-the-coefficients-as-a-pandas-series">
+<h3>Saving the coefficients as a pandas Series<a class="headerlink" href="#saving-the-coefficients-as-a-pandas-series" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>We can immediately turn the the models’ .coef_ into a pd.Series, as well.</p>
+<ul>
+<li><p>Therefore, in our pd.Series, we will provide the <code class="docutils literal notranslate"><span class="pre">lin_reg.coef_</span></code> as the first argument, followed by <code class="docutils literal notranslate"><span class="pre">index=feature_names</span></code> (pandas Series are 1D and do not have columns)</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Saving the coefficients</span>
+<span class="n">coeffs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">lin_reg</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span> <span class="n">feature_names</span><span class="p">)</span>
+<span class="n">coeffs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -2.204668e-01
+Medu                 2.913340e-01
+Fedu                -1.774736e-01
+traveltime           1.873338e-01
+studytime           -2.156197e-01
+failures            -1.005336e-01
+famrel               3.092222e-01
+freetime             1.891253e-02
+goout               -1.528323e-02
+Dalc                -2.123003e-01
+Walc                 2.609331e-01
+health               2.487018e-02
+absences             5.322267e-02
+G1                   1.409362e-01
+G2                   9.913313e-01
+school_GP           -1.264076e+12
+school_MS           -1.264076e+12
+sex_F                5.403885e+11
+sex_M                5.403885e+11
+address_R           -1.180478e+11
+address_U           -1.180478e+11
+famsize_GT3          3.462836e+11
+famsize_LE3          3.462836e+11
+Pstatus_A           -5.197327e+11
+Pstatus_T           -5.197327e+11
+Mjob_at_home        -5.532398e+11
+Mjob_health         -5.532398e+11
+Mjob_other          -5.532398e+11
+Mjob_services       -5.532398e+11
+Mjob_teacher        -5.532398e+11
+Fjob_at_home         2.089054e+11
+Fjob_health          2.089054e+11
+Fjob_other           2.089054e+11
+Fjob_services        2.089054e+11
+Fjob_teacher         2.089054e+11
+reason_course       -1.260069e+11
+reason_home         -1.260069e+11
+reason_other        -1.260069e+11
+reason_reputation   -1.260069e+11
+guardian_father      4.115864e+11
+guardian_mother      4.115864e+11
+guardian_other       4.115864e+11
+schoolsup_no        -3.648767e+11
+schoolsup_yes       -3.648767e+11
+famsup_no           -5.318227e+11
+famsup_yes          -5.318227e+11
+paid_no             -1.898838e+11
+paid_yes            -1.898838e+11
+activities_no       -1.851903e+11
+activities_yes      -1.851903e+11
+nursery_no           3.622818e+11
+nursery_yes          3.622818e+11
+higher_no            2.515684e+11
+higher_yes           2.515684e+11
+internet_no          5.004892e+11
+internet_yes         5.004892e+11
+romantic_no         -1.014646e+12
+romantic_yes        -1.014646e+12
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>The constant/intercept is not included in the .ceof_ attribute (if we used the default settings for LinearRegression which sets fit_intercept = True)</p></li>
+<li><p>The intercept is stored in the <code class="docutils literal notranslate"><span class="pre">.intercept_</span></code> attribute</p></li>
+<li><p>We can add this as a new value to our coeffs series.</p></li>
+<li><p>Note: it is up to you what you name your intercept/constant. If you wanted to keep the naming convention of statsmodels, you could use “const” or just “intercept” for simplicity.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># use .loc to add the intercept to the series</span>
+<span class="n">coeffs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;intercept&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lin_reg</span><span class="o">.</span><span class="n">intercept_</span>
+<span class="n">coeffs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -2.204668e-01
+Medu                 2.913340e-01
+Fedu                -1.774736e-01
+traveltime           1.873338e-01
+studytime           -2.156197e-01
+failures            -1.005336e-01
+famrel               3.092222e-01
+freetime             1.891253e-02
+goout               -1.528323e-02
+Dalc                -2.123003e-01
+Walc                 2.609331e-01
+health               2.487018e-02
+absences             5.322267e-02
+G1                   1.409362e-01
+G2                   9.913313e-01
+school_GP           -1.264076e+12
+school_MS           -1.264076e+12
+sex_F                5.403885e+11
+sex_M                5.403885e+11
+address_R           -1.180478e+11
+address_U           -1.180478e+11
+famsize_GT3          3.462836e+11
+famsize_LE3          3.462836e+11
+Pstatus_A           -5.197327e+11
+Pstatus_T           -5.197327e+11
+Mjob_at_home        -5.532398e+11
+Mjob_health         -5.532398e+11
+Mjob_other          -5.532398e+11
+Mjob_services       -5.532398e+11
+Mjob_teacher        -5.532398e+11
+Fjob_at_home         2.089054e+11
+Fjob_health          2.089054e+11
+Fjob_other           2.089054e+11
+Fjob_services        2.089054e+11
+Fjob_teacher         2.089054e+11
+reason_course       -1.260069e+11
+reason_home         -1.260069e+11
+reason_other        -1.260069e+11
+reason_reputation   -1.260069e+11
+guardian_father      4.115864e+11
+guardian_mother      4.115864e+11
+guardian_other       4.115864e+11
+schoolsup_no        -3.648767e+11
+schoolsup_yes       -3.648767e+11
+famsup_no           -5.318227e+11
+famsup_yes          -5.318227e+11
+paid_no             -1.898838e+11
+paid_yes            -1.898838e+11
+activities_no       -1.851903e+11
+activities_yes      -1.851903e+11
+nursery_no           3.622818e+11
+nursery_yes          3.622818e+11
+higher_no            2.515684e+11
+higher_yes           2.515684e+11
+internet_no          5.004892e+11
+internet_yes         5.004892e+11
+romantic_no         -1.014646e+12
+romantic_yes        -1.014646e+12
+intercept            2.246020e+12
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="displaying-the-coefficients">
+<h3>Displaying the Coefficients<a class="headerlink" href="#displaying-the-coefficients" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Just like we increased the number of columns displayed by pandas, we can also increase the number of rows displayed by pandas.</p></li>
+<li><p>CAUTION: DO NOT SET THE MAX ROWS TO 0!! If you try to display a dataframe that has 1,000,000 it will try to display ALL 1,000,000 rows and will crash your kernel.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pd.set_option(&#39;display.max_rows&#39;,100)</span>
+<span class="n">coeffs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -2.204668e-01
+Medu                 2.913340e-01
+Fedu                -1.774736e-01
+traveltime           1.873338e-01
+studytime           -2.156197e-01
+failures            -1.005336e-01
+famrel               3.092222e-01
+freetime             1.891253e-02
+goout               -1.528323e-02
+Dalc                -2.123003e-01
+Walc                 2.609331e-01
+health               2.487018e-02
+absences             5.322267e-02
+G1                   1.409362e-01
+G2                   9.913313e-01
+school_GP           -1.264076e+12
+school_MS           -1.264076e+12
+sex_F                5.403885e+11
+sex_M                5.403885e+11
+address_R           -1.180478e+11
+address_U           -1.180478e+11
+famsize_GT3          3.462836e+11
+famsize_LE3          3.462836e+11
+Pstatus_A           -5.197327e+11
+Pstatus_T           -5.197327e+11
+Mjob_at_home        -5.532398e+11
+Mjob_health         -5.532398e+11
+Mjob_other          -5.532398e+11
+Mjob_services       -5.532398e+11
+Mjob_teacher        -5.532398e+11
+Fjob_at_home         2.089054e+11
+Fjob_health          2.089054e+11
+Fjob_other           2.089054e+11
+Fjob_services        2.089054e+11
+Fjob_teacher         2.089054e+11
+reason_course       -1.260069e+11
+reason_home         -1.260069e+11
+reason_other        -1.260069e+11
+reason_reputation   -1.260069e+11
+guardian_father      4.115864e+11
+guardian_mother      4.115864e+11
+guardian_other       4.115864e+11
+schoolsup_no        -3.648767e+11
+schoolsup_yes       -3.648767e+11
+famsup_no           -5.318227e+11
+famsup_yes          -5.318227e+11
+paid_no             -1.898838e+11
+paid_yes            -1.898838e+11
+activities_no       -1.851903e+11
+activities_yes      -1.851903e+11
+nursery_no           3.622818e+11
+nursery_yes          3.622818e+11
+higher_no            2.515684e+11
+higher_yes           2.515684e+11
+internet_no          5.004892e+11
+internet_yes         5.004892e+11
+romantic_no         -1.014646e+12
+romantic_yes        -1.014646e+12
+intercept            2.246020e+12
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="suppressing-scientific-notation-in-pandas">
+<h3>Suppressing Scientific Notation in Pandas<a class="headerlink" href="#suppressing-scientific-notation-in-pandas" title="Permalink to this headline">#</a></h3>
+<blockquote>
+<div><p>We can ALSO use panda’s options to change how it display numeric values.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>if we want to add a <code class="docutils literal notranslate"><span class="pre">,</span></code> separator for thousands and round to 2 decimal places, we would use the format code “,.2f”.</p></li>
+<li><p>In order for Pandas to use this, we will have to use an f-string with a lambda x. (X represent any numeric value being displayed by pandas).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.float_format&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">,.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">coeffs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                                 -0.22
+Medu                                 0.29
+Fedu                                -0.18
+traveltime                           0.19
+studytime                           -0.22
+failures                            -0.10
+famrel                               0.31
+freetime                             0.02
+goout                               -0.02
+Dalc                                -0.21
+Walc                                 0.26
+health                               0.02
+absences                             0.05
+G1                                   0.14
+G2                                   0.99
+school_GP           -1,264,076,458,474.35
+school_MS           -1,264,076,458,473.97
+sex_F                  540,388,537,093.94
+sex_M                  540,388,537,093.93
+address_R             -118,047,849,812.08
+address_U             -118,047,849,811.93
+famsize_GT3            346,283,601,785.27
+famsize_LE3            346,283,601,785.28
+Pstatus_A             -519,732,724,499.89
+Pstatus_T             -519,732,724,499.51
+Mjob_at_home          -553,239,828,429.80
+Mjob_health           -553,239,828,429.77
+Mjob_other            -553,239,828,429.59
+Mjob_services         -553,239,828,429.63
+Mjob_teacher          -553,239,828,429.96
+Fjob_at_home           208,905,426,864.61
+Fjob_health            208,905,426,864.66
+Fjob_other             208,905,426,864.17
+Fjob_services          208,905,426,863.74
+Fjob_teacher           208,905,426,864.23
+reason_course         -126,006,862,971.79
+reason_home           -126,006,862,972.11
+reason_other          -126,006,862,971.39
+reason_reputation     -126,006,862,971.48
+guardian_father        411,586,426,690.97
+guardian_mother        411,586,426,691.23
+guardian_other         411,586,426,691.29
+schoolsup_no          -364,876,692,253.00
+schoolsup_yes         -364,876,692,252.65
+famsup_no             -531,822,663,254.63
+famsup_yes            -531,822,663,254.48
+paid_no               -189,883,819,860.33
+paid_yes              -189,883,819,860.17
+activities_no         -185,190,299,594.36
+activities_yes        -185,190,299,594.70
+nursery_no             362,281,761,927.64
+nursery_yes            362,281,761,927.43
+higher_no              251,568,399,249.49
+higher_yes             251,568,399,250.31
+internet_no            500,489,194,362.48
+internet_yes           500,489,194,362.38
+romantic_no         -1,014,645,980,572.18
+romantic_yes        -1,014,645,980,572.47
+intercept            2,246,019,831,747.05
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="inspecting-our-coefficients-sanity-check">
+<h2>Inspecting Our Coefficients - Sanity Check<a class="headerlink" href="#inspecting-our-coefficients-sanity-check" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Hmmmm….hold on now. We saw last lesson that our target, G3, contained scores from 0 to 20.</p></li>
+<li><p>So HOW IN THE WORLD does it make sense that your model’s baseline value (the y-intercept) is 2 trillion?!?</p></li>
+<li><p>This may be due to us introducing multicollinearity during One Hot Encoding.</p></li>
+</ul>
+<section id="using-onehotencoder-with-binary-categorical-features">
+<h3>Using OneHotEncoder with binary categorical features.<a class="headerlink" href="#using-onehotencoder-with-binary-categorical-features" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>if we check just our string columns for the # of unique values:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>school        2
+sex           2
+address       2
+famsize       2
+Pstatus       2
+Mjob          5
+Fjob          5
+reason        4
+guardian      3
+schoolsup     2
+famsup        2
+paid          2
+activities    2
+nursery       2
+higher        2
+internet      2
+romantic      2
+dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>We can see that many of our categories only have 2 options.</p>
+<ul>
+<li><p>For example: the paid feature.</p>
+<ul>
+<li><p>One Hot Encoding this feature will create a “paid_no” column and “paid_yes” column.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Here is where we should think about our final use case for this data. If we want to explain student performance, there is no benefit to one-hot-encoding both categories.</p>
+<ul>
+<li><p>We know that if someone has a 0 for “paid_yes” that it means “paid_no” would be 1.</p></li>
+</ul>
+</li>
+<li><p>To remove these unnecessary columns, we can change our arguments for our OneHotEncoder in our pipeline and add “`drop=’if_binary’.</p>
+<ul>
+<li><p>HOWEVER, we cannot use BOTH <code class="docutils literal notranslate"><span class="pre">handle_unknown</span></code> AND the <code class="docutils literal notranslate"><span class="pre">drop</span></code> argument together. We will get an error message.</p></li>
+</ul>
+</li>
+<li><p>Since our current modeling will be used to extract insights for our stakeholder and will not be deployed to the cloud where it will run predictions on new data, we can safely switch to using the drop=’if_binary’ option.</p></li>
+</ul>
+</section>
+</section>
+<section id="recreating-our-x-y-data-with-drop-if-binary">
+<h2>Recreating Our X/y data with <code class="docutils literal notranslate"><span class="pre">drop='if_binary'</span></code><a class="headerlink" href="#recreating-our-x-y-data-with-drop-if-binary" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## make pipelines for categorical vs numeric data</span>
+<span class="n">cat_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span>
+                                       <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;MISSING&#39;</span><span class="p">),</span>
+                         <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="s1">&#39;if_binary&#39;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">num_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">))</span>
+
+<span class="c1">## make the preprocessing column transformer</span>
+<span class="n">preprocessor</span> <span class="o">=</span> <span class="n">make_column_transformer</span><span class="p">((</span><span class="n">num_pipe</span><span class="p">,</span> <span class="n">num_sel</span><span class="p">),</span>
+                                       <span class="p">(</span><span class="n">cat_pipe</span><span class="p">,</span><span class="n">cat_sel</span><span class="p">),</span>
+                                      <span class="n">verbose_feature_names_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1">## fit column transformer and run get_feature_names_out</span>
+<span class="n">preprocessor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">feature_names</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+
+<span class="n">X_train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+
+<span class="n">X_test_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> 
+                          <span class="n">columns</span> <span class="o">=</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">X_test_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>Medu</th>
+      <th>Fedu</th>
+      <th>traveltime</th>
+      <th>studytime</th>
+      <th>failures</th>
+      <th>famrel</th>
+      <th>freetime</th>
+      <th>goout</th>
+      <th>Dalc</th>
+      <th>Walc</th>
+      <th>health</th>
+      <th>absences</th>
+      <th>G1</th>
+      <th>G2</th>
+      <th>school_MS</th>
+      <th>sex_M</th>
+      <th>address_U</th>
+      <th>famsize_LE3</th>
+      <th>Pstatus_T</th>
+      <th>Mjob_at_home</th>
+      <th>Mjob_health</th>
+      <th>Mjob_other</th>
+      <th>Mjob_services</th>
+      <th>Mjob_teacher</th>
+      <th>Fjob_at_home</th>
+      <th>Fjob_health</th>
+      <th>Fjob_other</th>
+      <th>Fjob_services</th>
+      <th>Fjob_teacher</th>
+      <th>reason_course</th>
+      <th>reason_home</th>
+      <th>reason_other</th>
+      <th>reason_reputation</th>
+      <th>guardian_father</th>
+      <th>guardian_mother</th>
+      <th>guardian_other</th>
+      <th>schoolsup_yes</th>
+      <th>famsup_yes</th>
+      <th>paid_yes</th>
+      <th>activities_yes</th>
+      <th>nursery_yes</th>
+      <th>higher_yes</th>
+      <th>internet_yes</th>
+      <th>romantic_yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>58</th>
+      <td>15.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>5.00</td>
+      <td>2.00</td>
+      <td>9.00</td>
+      <td>10.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>338</th>
+      <td>18.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>4.00</td>
+      <td>0.00</td>
+      <td>5.00</td>
+      <td>3.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>7.00</td>
+      <td>16.00</td>
+      <td>15.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>17.00</td>
+      <td>4.00</td>
+      <td>3.00</td>
+      <td>1.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>4.00</td>
+      <td>2.00</td>
+      <td>2.00</td>
+      <td>1.00</td>
+      <td>2.00</td>
+      <td>3.00</td>
+      <td>0.00</td>
+      <td>15.00</td>
+      <td>15.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>1.00</td>
+      <td>0.00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<ul class="simple">
+<li><p>As we can see above, we now only have 1 version of our binary columns (e.g. “paid_yes”,”internet_yes”)</p></li>
+</ul>
+</section>
+<section id="refitting-a-linearregression">
+<h2>Refitting a LinearRegression<a class="headerlink" href="#refitting-a-linearregression" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## fitting a linear regression model</span>
+<span class="n">lin_reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">lin_reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">evaluate_linreg</span><span class="p">(</span><span class="n">lin_reg</span><span class="p">,</span> <span class="n">X_train_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test_df</span><span class="p">,</span><span class="n">y_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Data  Train  Test  Delta
+R^2    0.85  0.81  -0.04
+RMSE   1.83  1.85   0.02
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Saving the coefficients</span>
+<span class="n">coeffs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">lin_reg</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span> <span class="n">feature_names</span><span class="p">)</span>
+<span class="n">coeffs</span><span class="p">[</span><span class="s1">&#39;intercept&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lin_reg</span><span class="o">.</span><span class="n">intercept_</span>
+<span class="n">coeffs</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>age                 -0.22
+Medu                 0.29
+Fedu                -0.18
+traveltime           0.19
+studytime           -0.22
+failures            -0.10
+famrel               0.31
+freetime             0.02
+goout               -0.02
+Dalc                -0.21
+Walc                 0.26
+health               0.03
+absences             0.05
+G1                   0.14
+G2                   0.99
+school_MS            0.38
+sex_M               -0.01
+address_U            0.15
+famsize_LE3          0.01
+Pstatus_T            0.38
+Mjob_at_home        -0.05
+Mjob_health         -0.02
+Mjob_other           0.16
+Mjob_services        0.12
+Mjob_teacher        -0.21
+Fjob_at_home         0.33
+Fjob_health          0.38
+Fjob_other          -0.11
+Fjob_services       -0.54
+Fjob_teacher        -0.05
+reason_course       -0.09
+reason_home         -0.42
+reason_other         0.30
+reason_reputation    0.21
+guardian_father     -0.20
+guardian_mother      0.07
+guardian_other       0.13
+schoolsup_yes        0.34
+famsup_yes           0.16
+paid_yes             0.16
+activities_yes      -0.34
+nursery_yes         -0.21
+higher_yes           0.82
+internet_yes        -0.09
+romantic_yes        -0.29
+intercept           -0.95
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>OK, now THESE coefficients pass our sanity check. They are all values &lt;1, which seems appropriate for predicting a value between 0 and 100.</p></li>
+</ul>
+<section id="visualizing-coefficients">
+<h3>VIsualizing Coefficients<a class="headerlink" href="#visualizing-coefficients" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Now, let’s examine the coefficients below and see if they make sense, based on our knowledge about houses.</p></li>
+<li><p>To more easily analyze our coefficients, we will sort them by value and plot them as a horizontal bar graph.</p></li>
+<li><p>Let’s also load in the data dictionary so we can make informed interpretations about the meaning of our features</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Plot the coefficients</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;LinearRegression Coefficients&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/01_Regression_Coeffiicents_Revisited_v2-Final_72_0.png" src="../../_images/01_Regression_Coeffiicents_Revisited_v2-Final_72_0.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p><strong>Attributes for both student-mat.csv (Math course) and student-por.csv (Portuguese language course) datasets:</strong></p></li>
+<li><p>1 school - student’s school (binary: “GP” - Gabriel Pereira or “MS” - Mousinho da Silveira)</p></li>
+<li><p>2 sex - student’s sex (binary: “F” - female or “M” - male)</p></li>
+<li><p>3 age - student’s age (numeric: from 15 to 22)</p></li>
+<li><p>4 address - student’s home address type (binary: “U” - urban or “R” - rural)</p></li>
+<li><p>5 famsize - family size (binary: “LE3” - less or equal to 3 or “GT3” - greater than 3)</p></li>
+<li><p>6 Pstatus - parent’s cohabitation status (binary: “T” - living together or “A” - apart)</p></li>
+<li><p>7 Medu - mother’s education (numeric: 0 - none,  1 - primary education (4th grade), 2 – 5th to 9th grade, 3 – secondary education or 4 – higher education)</p></li>
+<li><p>8 Fedu - father’s education (numeric: 0 - none,  1 - primary education (4th grade), 2 – 5th to 9th grade, 3 – secondary education or 4 – higher education)</p></li>
+<li><p>9 Mjob - mother’s job (nominal: “teacher”, “health” care related, civil “services” (e.g. administrative or police), “at_home” or “other”)</p></li>
+<li><p>10 Fjob - father’s job (nominal: “teacher”, “health” care related, civil “services” (e.g. administrative or police), “at_home” or “other”)</p></li>
+<li><p>11 reason - reason to choose this school (nominal: close to “home”, school “reputation”, “course” preference or “other”)</p></li>
+<li><p>12 guardian - student’s guardian (nominal: “mother”, “father” or “other”)</p></li>
+<li><p>13 traveltime - home to school travel time (numeric: 1 - &lt;15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - &gt;1 hour)</p></li>
+<li><p>14 studytime - weekly study time (numeric: 1 - &lt;2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - &gt;10 hours)</p></li>
+<li><p>15 failures - number of past class failures (numeric: n if 1&lt;=n&lt;3, else 4)</p></li>
+<li><p>16 schoolsup - extra educational support (binary: yes or no)</p></li>
+<li><p>17 famsup - family educational support (binary: yes or no)</p></li>
+<li><p>18 paid - extra paid classes within the course subject (Math or Portuguese) (binary: yes or no)</p></li>
+<li><p>19 activities - extra-curricular activities (binary: yes or no)</p></li>
+<li><p>20 nursery - attended nursery school (binary: yes or no)</p></li>
+<li><p>21 higher - wants to take higher education (binary: yes or no)</p></li>
+<li><p>22 internet - Internet access at home (binary: yes or no)</p></li>
+<li><p>23 romantic - with a romantic relationship (binary: yes or no)</p></li>
+<li><p>24 famrel - quality of family relationships (numeric: from 1 - very bad to 5 - excellent)</p></li>
+<li><p>25 freetime - free time after school (numeric: from 1 - very low to 5 - very high)</p></li>
+<li><p>26 goout - going out with friends (numeric: from 1 - very low to 5 - very high)</p></li>
+<li><p>27 Dalc - workday alcohol consumption (numeric: from 1 - very low to 5 - very high)</p></li>
+<li><p>28 Walc - weekend alcohol consumption (numeric: from 1 - very low to 5 - very high)</p></li>
+<li><p>29 health - current health status (numeric: from 1 - very bad to 5 - very good)</p></li>
+<li><p>30 absences - number of school absences (numeric: from 0 to 93)</p></li>
+<li><p>These grades are related with the course subject, Math or Portuguese:</p>
+<ul>
+<li><p>31 G1 - first period grade (numeric: from 0 to 20)</p></li>
+<li><p>31 G2 - second period grade (numeric: from 0 to 20)</p></li>
+<li><p>32 G3 - final grade (numeric: from 0 to 20, output target)</p></li>
+</ul>
+</li>
+<li><p>Additional note:</p>
+<ul>
+<li><p>there are several (382) students that belong to both datasets .</p></li>
+<li><p>These students can be identified by searching for identical attributes</p></li>
+<li><p>that characterize each student, as shown in the annexed R file.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="reminder-interpreting-coefficients">
+<h3>Reminder: Interpreting Coefficients<a class="headerlink" href="#reminder-interpreting-coefficients" title="Permalink to this headline">#</a></h3>
+<p>When interpreting coefficients we need to keep in mind what transformations have been applied to our features.</p>
+<ul class="simple">
+<li><p>If its a numeric feature and it has NOT been scaled:</p>
+<ul>
+<li><p>The coefficient tells us “when I increase the value for this feature by <strong>1 unit</strong>, this is the change in the target.”</p></li>
+</ul>
+</li>
+<li><p>If its a numeric feature that has been scaled using Z-scores/StandardScaler:</p>
+<ul>
+<li><p>The coefficient tells us “when I increase the value for this feature by <strong>1 Standard Deviation</strong> this is the change in the target.”</p></li>
+</ul>
+</li>
+<li><p>If its a One-Hot Encoded categorical feature:</p>
+<ul>
+<li><p>The coefficient tells us “if you belong to this category, this will be the change in the target”</p></li>
+</ul>
+</li>
+</ul>
+<section id="interpreting-our-model-s-coefficients">
+<h4>Interpreting Our Model’s Coefficients<a class="headerlink" href="#interpreting-our-model-s-coefficients" title="Permalink to this headline">#</a></h4>
+<ul class="simple">
+<li><p>So, looking at our coefficient plot above and the Series below, let’s interpret the 3 largest coefficients that increase G3, and the largest 3 that decrease G3 .</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">coeffs</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intercept           -0.95
+Fjob_services       -0.54
+reason_home         -0.42
+activities_yes      -0.34
+romantic_yes        -0.29
+age                 -0.22
+studytime           -0.22
+Dalc                -0.21
+nursery_yes         -0.21
+Mjob_teacher        -0.21
+guardian_father     -0.20
+Fedu                -0.18
+Fjob_other          -0.11
+failures            -0.10
+internet_yes        -0.09
+reason_course       -0.09
+Mjob_at_home        -0.05
+Fjob_teacher        -0.05
+Mjob_health         -0.02
+goout               -0.02
+sex_M               -0.01
+famsize_LE3          0.01
+freetime             0.02
+health               0.03
+absences             0.05
+guardian_mother      0.07
+Mjob_services        0.12
+guardian_other       0.13
+G1                   0.14
+address_U            0.15
+famsup_yes           0.16
+paid_yes             0.16
+Mjob_other           0.16
+traveltime           0.19
+reason_reputation    0.21
+Walc                 0.26
+Medu                 0.29
+reason_other         0.30
+famrel               0.31
+Fjob_at_home         0.33
+schoolsup_yes        0.34
+Fjob_health          0.38
+school_MS            0.38
+Pstatus_T            0.38
+higher_yes           0.82
+G2                   0.99
+dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Coefficients that Positively Influence Final Grade:</p>
+<ul>
+<li><p>G2 (Year 2 Grade):</p>
+<ul>
+<li><p>Increasing their Year 2 grade by 1 will also increase their predict G3 by 0.99 points.</p></li>
+</ul>
+</li>
+<li><p>higher_yes (student intends to continue higher education):</p>
+<ul>
+<li><p>Being in the yes group (wanting hire education) increases their performance by 0.82</p></li>
+</ul>
+</li>
+<li><p>For Pstatus_T (Parents live Together):</p>
+<ul>
+<li><p>Having parents living together increases their final grade by 0.38 points.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Coefficients that Negatively Influence Final Grade:</p>
+<ul>
+<li><p>Intercept:</p>
+<ul>
+<li><p>Our model assumed a starting score of -.95.</p></li>
+</ul>
+</li>
+<li><p>Fjob_services:</p>
+<ul>
+<li><p>Having a father with a job in administration/police  subtracts 0.54 points from G3.</p></li>
+</ul>
+</li>
+<li><p>reason_home:</p>
+<ul>
+<li><p>Choosing the school because it is simply close to home subtracts 0.42 points from G3.</p></li>
+</ul>
+</li>
+<li><p>Activities_yes:</p>
+<ul>
+<li><p>Being involved in Extracurricular activities decreases G3 by .34 points.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="debating-whether-to-include-final-story-telling-summary-or-not">
+<h4><code class="docutils literal notranslate"><span class="pre">&lt;DEBATING</span> <span class="pre">WHETHER</span> <span class="pre">TO</span> <span class="pre">INCLUDE</span> <span class="pre">FINAL</span> <span class="pre">STORY-TELLING</span> <span class="pre">SUMMARY</span> <span class="pre">OR</span> <span class="pre">NOT&gt;</span> </code><a class="headerlink" href="#debating-whether-to-include-final-story-telling-summary-or-not" title="Permalink to this headline">#</a></h4>
+<ul class="simple">
+<li><p>Overall, these coefficients make a lot of intuitive sense!</p>
+<ul>
+<li><p>Students who have a history of good grades, who plan to continue their education, and who have an intact nuclear family will <code class="docutils literal notranslate"><span class="pre">perform</span> <span class="pre">well&lt;rephase&gt;</span></code> in their final year.</p></li>
+<li><p>Students that are attending this school due because its close to home, who are involved in extracurricular activities will have reduced grades for their final year.</p></li>
+</ul>
+</li>
+<li><p>However, it is a little harder to understand how having a father with a job in “services” (administration or police) causes a decrease in grades.</p>
+<ul>
+<li><p>Let’s keep this coefficient in mind as we move forward and iterate on our regression modeling.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h3>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>In the next lesson, we will iterate upon this model and discuss selecting a final regression model with coefficients that are appropriate for our purposes.</p></li>
+</ul>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>In this lesson, we revisited linear regression with scikit-learn. We introduced some simplifications to our workflow and discussed extracting coefficients from our LinearRegression model.</p></li>
+<li><p>Next lesson we will iterate on our current model to find more intuitive coefficients that we can use to extract insight for our stakeholders.</p></li>
+</ul>
+<section id="recap-sklearn-v1-1">
+<h3>Recap - Sklearn v1.1<a class="headerlink" href="#recap-sklearn-v1-1" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>We added the argument <code class="docutils literal notranslate"><span class="pre">verbose_feature_names_out=False</span></code> to <code class="docutils literal notranslate"><span class="pre">make_column_transformer</span></code>, which let us extract our feature names (after fitting the preprocessor) using <code class="docutils literal notranslate"><span class="pre">.get_feature_names_out()</span></code></p></li>
+<li><p>We then used this list of features when reconstruction our transformed X_train and X_test as dataframes and when extracting coefficients from our model.</p></li>
+</ul>
+</section>
+<section id="recap-pandas-options">
+<h3>Recap - Pandas Options<a class="headerlink" href="#recap-pandas-options" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>We used the following options in our notebook. Ideally, we should group these together and move them to the top of our notebook, immediately after our imports.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Reviewing the options used</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.float_format&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">,.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "dojo-env"
+        },
+        kernelOptions: {
+            kernelName: "dojo-env",
+            path: "./LESSONS/1_Coefficients_Revisited"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'dojo-env'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../0_insights_for_stakeholders/Insights%20for%20Stakeholders.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Insights for Stakeholders</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../2_Analyzing_Coefficients/02_v2_Analyzing_Coefficients%20-RENAME.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Analyzing Coefficients - V2</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Coding Dojo Data Science<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
